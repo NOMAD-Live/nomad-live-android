@@ -33,7 +33,7 @@ public class FullscreenVideoActivity extends FragmentActivity {
         final VideoView myVideoView = (VideoView) findViewById(R.id.fullscreen_content);
 
         // Retrieve video from Wowza stream
-        myVideoView.setVideoPath(getString(R.string.wowza_vod_hls));
+        myVideoView.setVideoPath(getString(R.string.wowza_live_hls));
 
         myVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Play the video once the player is ready

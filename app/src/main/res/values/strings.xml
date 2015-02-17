@@ -5,6 +5,7 @@
     <string name="wowza_vod_rtsp">rtsp://192.168.0.208:1935/vod/sample.mp4</string>
     <string name="wowza_vod_hls">http://192.168.0.208:1935/vod/mp4:sample.mp4/playlist.m3u8</string>
     <string name="wowza_live_webcam">rtsp://192.168.0.208:1935/live/webcam</string>
+    <string name="wowza_live_hls">http://192.168.0.208:1935/live/myStream/playlist.m3u8</string>
     <string name="dummy_button">C\'est quoi le fuck ?</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
