@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -31,9 +32,13 @@ public class FullscreenVideoActivity extends FragmentActivity {
         setContentView(R.layout.activity_fullscreen);
 
         final VideoView myVideoView = (VideoView) findViewById(R.id.fullscreen_content);
+        final Button button = (Button) findViewById(R.id.dummy_button);
+
+        final String videoPath = getString(R.string.wowza_live_hls);
 
         // Retrieve video from Wowza stream
-        myVideoView.setVideoPath(getString(R.string.wowza_live_hls));
+        myVideoView.setVideoPath(videoPath);
+        button.setText(videoPath);
 
         myVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Play the video once the player is ready
@@ -52,15 +57,18 @@ public class FullscreenVideoActivity extends FragmentActivity {
                         break;
                     }
                     case MotionEvent.ACTION_UP: {
+                        // Checks for single tap based on timing
                         long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
+
                         if(clickDuration < MAX_CLICK_DURATION) {
                             if (myVideoView.isPlaying()) {
                                 myVideoView.pause();
-                                Toast.makeText(getApplicationContext(), "Paused", Toast.LENGTH_SHORT).show();
+                                toast("Paused");
                                 return false;
                             } else {
                                 myVideoView.resume();
-                                Toast.makeText(getApplicationContext(), "Resumed", Toast.LENGTH_SHORT).show();
+                                toast("Resuming...");
+
                             }
                         }
                     }
@@ -69,5 +77,9 @@ public class FullscreenVideoActivity extends FragmentActivity {
             }
         });
 
+    }
+
+    private void toast(String s) {
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }
 }
