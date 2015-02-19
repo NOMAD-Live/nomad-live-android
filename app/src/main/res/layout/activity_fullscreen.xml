@@ -12,7 +12,7 @@
         <!-- The primary full-screen view. This can be replaced with whatever view
              is needed to present your content, e.g. VideoView, SurfaceView,
              TextureView, etc. -->
-        <VideoView
+        <com.thenomads.android.webcast.IntuitiveFullScreenVideoView
             android:id="@+id/fullscreen_content"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
