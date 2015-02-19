@@ -42,6 +42,7 @@ public class IntuitiveFullScreenVideoView extends VideoView {
     }
 
     private void clickToPause() {
+
         this.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent me) {
@@ -77,13 +78,17 @@ public class IntuitiveFullScreenVideoView extends VideoView {
         this.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
+
                 toast("Local File Fallback");
+
                 String path = "android.resource://" + getContext().getPackageName() + "/" + R.raw.dancefloor;
 
                 setVideoPath(path);
+                //mp.setLooping(true);
 
                 return false;
             }
+
         });
     }
 
