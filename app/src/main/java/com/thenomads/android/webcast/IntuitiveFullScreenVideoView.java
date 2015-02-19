@@ -18,7 +18,6 @@ import java.util.Calendar;
 public class IntuitiveFullScreenVideoView extends VideoView {
 
     private static final int MAX_CLICK_DURATION = 200;
-    private IntuitiveFullScreenVideoView that = this;
     private long startClickTime;
 
     public IntuitiveFullScreenVideoView(Context context, AttributeSet attrs) {
@@ -35,7 +34,7 @@ public class IntuitiveFullScreenVideoView extends VideoView {
         this.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Play the video once the player is ready
             public void onPrepared(MediaPlayer mp) {
-                that.start();
+                start();
             }
         });
 
@@ -56,12 +55,12 @@ public class IntuitiveFullScreenVideoView extends VideoView {
                         long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
 
                         if (clickDuration < MAX_CLICK_DURATION) {
-                            if (that.isPlaying()) {
-                                that.pause();
+                            if (isPlaying()) {
+                                pause();
                                 toast("Paused");
                                 return false;
                             } else {
-                                that.resume();
+                                resume();
                                 toast("Resuming...");
 
                             }
