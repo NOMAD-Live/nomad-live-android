@@ -25,10 +25,12 @@ public class FullscreenVideoActivity extends FragmentActivity {
         final VideoView myVideoView = (VideoView) findViewById(R.id.fullscreen_content);
         final Button button = (Button) findViewById(R.id.dummy_button);
 
-        final String videoPath = getString(R.string.wowza_vod_hls);
+        String videoPath = getString(R.string.wowza_vod_hls);
 
         // Retrieve video from Wowza stream
         myVideoView.setVideoPath(videoPath);
+
+
         button.setText(videoPath);
     }
 }

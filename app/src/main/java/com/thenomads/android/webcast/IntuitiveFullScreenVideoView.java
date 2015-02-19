@@ -26,6 +26,7 @@ public class IntuitiveFullScreenVideoView extends VideoView {
     }
 
     private void initCustomFullScreenVideoView() {
+        this.localFileFallback();
         this.autoStartOnReady();
         this.clickToPause();
     }
@@ -72,6 +73,19 @@ public class IntuitiveFullScreenVideoView extends VideoView {
         });
     }
 
+    private void localFileFallback() {
+        this.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                toast("Local File Fallback");
+                String path = "android.resource://" + getContext().getPackageName() + "/" + R.raw.dancefloor;
+
+                setVideoPath(path);
+
+                return false;
+            }
+        });
+    }
 
     private void toast(String s) {
         Toast.makeText(this.getContext(), s, Toast.LENGTH_SHORT).show();
