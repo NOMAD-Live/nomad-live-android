@@ -1,5 +1,7 @@
 package com.thenomads.android.webcast;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,6 +34,8 @@ class Toolbox {
             // Retrieves content
             String content = Toolbox.getURLContentAsString(simpleURL);
 
+            Log.d("Toolbox", "Page content:" + content);
+
             if (content.contains("Wowza Streaming Engine")) {
                 available = true;
             }
@@ -40,13 +44,15 @@ class Toolbox {
         } catch (IOException e) {
             // Fails silently.
             // If a local path is passed it will do nothing.
+            Log.d("Toolbox", "Wowza seems down !");
+            e.printStackTrace();
         }
 
         return available;
 
     }
 
-    private static String getURLContentAsString(URL url) throws IOException {
+    static String getURLContentAsString(URL url) throws IOException {
 
         URLConnection urlConnection = url.openConnection();
         InputStream is = urlConnection.getInputStream();
