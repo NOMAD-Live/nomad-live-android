@@ -40,7 +40,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.swipe_views);
 
-        // Create the adapter that will return a fragment for each of the three primary sections
+        // Create the adapter that will return a fragment for each of the two primary sections
         // of the app.
         mAppSectionsPagerAdapter = new FragmentPageAdapter(getSupportFragmentManager());
 
