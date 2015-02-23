@@ -5,48 +5,61 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.VideoView;
 
 public class LiveScreenFragment extends Fragment {
 
-    private View rootView;
-    private Button button;
-    private String videoPath;
-    private VideoView myVideoView;
+    private View mRootView;
+    private Button mButton;
+    private String mVideoPath;
+    private WebView mTwitterBannerWebView;
+    private VideoView mLiveVideoView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_fullscreen_video, container, false);
-        myVideoView = (VideoView) rootView.findViewById(R.id.fullscreen_content);
-        button = (Button) rootView.findViewById(R.id.dummy_button);
-        videoPath = getString(R.string.wowza_vod_hls);
+        mRootView = inflater.inflate(R.layout.fragment_fullscreen_video, container, false);
+        mLiveVideoView = (VideoView) mRootView.findViewById(R.id.fullscreen_content);
+        mButton = (Button) mRootView.findViewById(R.id.playback_button);
 
-        button.setText("Playing from Wowza.");
-        myVideoView.setVideoPath(videoPath);
+        mVideoPath = getString(R.string.wowza_vod_hls);
 
-        button.setOnClickListener(new View.OnClickListener() {
-                                      @Override
-                                      public void onClick(View v) {
-                                          if (button.getText().toString().startsWith("Playing Local")) {
+        // Takes care of the video side
+        mButton.setText("Playing from Wowza.");
+        mLiveVideoView.setVideoPath(mVideoPath);
 
-                                              // Retrieve video from Wowza stream
-                                              myVideoView.setVideoPath(videoPath);
-                                              button.setText("Playing from Wowza.");
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                togglePlayback();
+            }
+        });
 
-                                          } else {
 
-                                              String path = "android.resource://" + rootView.getContext().getPackageName() + "/" + R.raw.dancefloor;
+        // Sets up the twitter banner
+        mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
+        mTwitterBannerWebView.loadUrl("file:///android_asset/banner.html");
 
-                                              myVideoView.setVideoPath(path);
-                                              button.setText("Playing Local File.");
-                                          }
-                                      }
-                                  }
-        );
 
-        return rootView;
+        return mRootView;
+    }
+
+    public void togglePlayback() {
+        if (mButton.getText().toString().startsWith("Playing Local")) {
+
+            // Retrieve video from Wowza stream
+            mLiveVideoView.setVideoPath(mVideoPath);
+            mButton.setText("Playing from Wowza.");
+
+        } else {
+
+            String path = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.dancefloor;
+
+            mLiveVideoView.setVideoPath(path);
+            mButton.setText("Playing Local File.");
+        }
     }
 }

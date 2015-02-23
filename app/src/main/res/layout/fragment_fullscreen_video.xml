@@ -23,21 +23,30 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <LinearLayout
+        <GridLayout
             android:id="@+id/fullscreen_content_controls"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal">
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="bottom"
+            android:columnCount="1"
+            android:rowCount="2"
+            android:rowOrderPreserved="true"
+            android:useDefaultMargins="true">
+
+            <com.thenomads.android.webcast.TransparentWebView
+                android:id="@+id/twitter_banner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:alpha="0.5" />
 
             <Button
-                android:id="@+id/dummy_button"
-                android:layout_width="0dp"
+                android:id="@+id/playback_button"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:alpha="1"
                 android:text="@string/dummy_button" />
+        </GridLayout>
 
-        </LinearLayout>
     </FrameLayout>
 </RelativeLayout>
