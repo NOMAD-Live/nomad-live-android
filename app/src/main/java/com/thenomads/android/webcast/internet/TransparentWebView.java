@@ -15,6 +15,7 @@ import android.webkit.WebViewClient;
 public class TransparentWebView extends WebView {
 
     private Context context;
+
     /**
      * Construct a new TransparentWebView with a Context object.
      *
@@ -73,7 +74,6 @@ public class TransparentWebView extends WebView {
                 context.startActivity(intent);
                 return false;
             }
-
         });
     }
 }
