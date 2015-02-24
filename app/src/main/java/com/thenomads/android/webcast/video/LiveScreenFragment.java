@@ -42,6 +42,37 @@ public class LiveScreenFragment extends Fragment {
         mSwitch.setTextOff("Offline");
         mSwitch.setTextOn("Online");
 
+        // Makes sure the switch controls the playback (Server or Local)
+        bindSwitchToVideoPlaybackSource();
+
+        // Go online if available
+        checkServerAvailability();
+
+        // Sets up the twitter banner
+        mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
+        retrieveTwitterTickerContent();
+
+        return mRootView;
+    }
+
+    private void retrieveTwitterTickerContent() {
+
+        new ReachabilityTest(mRootView.getContext(), getString(R.string.twitter_ticker_endpoint), new ReachabilityTest.Callback() {
+            @Override
+            public void onReachabilityTestPassed() {
+                mTwitterBannerWebView.loadUrl(getString(R.string.twitter_ticker_endpoint));
+            }
+
+            @Override
+            public void onReachabilityTestFailed() {
+                mTwitterBannerWebView.loadUrl(getString(R.string.twitter_ticker_fallback));
+            }
+        }).execute();
+//
+
+    }
+
+    private void bindSwitchToVideoPlaybackSource() {
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
@@ -56,21 +87,10 @@ public class LiveScreenFragment extends Fragment {
 
             }
         });
-
-        // Go online if available
-        checkServerAvailability();
-
-
-        // Sets up the twitter banner
-        mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
-        mTwitterBannerWebView.loadUrl("http://www.thenomads.com/twitterticker/");
-//        mTwitterBannerWebView.loadUrl("file:///android_asset/banner.html");
-
-        return mRootView;
     }
 
-    public void checkServerAvailability() {
-        new ReachabilityTest(mRootView.getContext(), "192.168.0.208", 1935, new ReachabilityTest.Callback() {
+    private void checkServerAvailability() {
+        new ReachabilityTest(mRootView.getContext(), mVideoPath, new ReachabilityTest.Callback() {
             @Override
             public void onReachabilityTestPassed() {
                 mSwitch.setChecked(true);
@@ -82,6 +102,4 @@ public class LiveScreenFragment extends Fragment {
             }
         }).execute();
     }
-
-
 }
