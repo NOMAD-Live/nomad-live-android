@@ -1,8 +1,11 @@
-package com.thenomads.android.webcast;
+package com.thenomads.android.webcast.internet;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -11,6 +14,7 @@ import android.webkit.WebViewClient;
  */
 public class TransparentWebView extends WebView {
 
+    private Context context;
     /**
      * Construct a new TransparentWebView with a Context object.
      *
@@ -18,7 +22,8 @@ public class TransparentWebView extends WebView {
      */
     public TransparentWebView(Context context) {
         super(context);
-        makeBackgroundTransparent();
+        this.context = context;
+        setup();
     }
 
     /**
@@ -29,7 +34,8 @@ public class TransparentWebView extends WebView {
      */
     public TransparentWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        makeBackgroundTransparent();
+        this.context = context;
+        setup();
     }
 
     /**
@@ -41,7 +47,14 @@ public class TransparentWebView extends WebView {
      */
     public TransparentWebView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        this.context = context;
+        setup();
+    }
+
+    private void setup() {
         makeBackgroundTransparent();
+        WebSettings settings = this.getSettings();
+        settings.setJavaScriptEnabled(true);
     }
 
     private void makeBackgroundTransparent() {
@@ -52,6 +65,15 @@ public class TransparentWebView extends WebView {
                 if (Build.VERSION.SDK_INT >= 11)
                     view.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
             }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // Launch another Activity that handles URLs
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                context.startActivity(intent);
+                return false;
+            }
+
         });
     }
 }

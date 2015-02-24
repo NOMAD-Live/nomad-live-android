@@ -1,4 +1,4 @@
-package com.thenomads.android.webcast;
+package com.thenomads.android.webcast.video;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +9,9 @@ import android.webkit.WebView;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.VideoView;
+
+import com.thenomads.android.webcast.R;
+import com.thenomads.android.webcast.internet.ReachabilityTest;
 
 public class LiveScreenFragment extends Fragment {
 
@@ -25,7 +28,7 @@ public class LiveScreenFragment extends Fragment {
 
         mRootView = inflater.inflate(R.layout.fragment_fullscreen_video, container, false);
         mLiveVideoView = (VideoView) mRootView.findViewById(R.id.fullscreen_content);
-//        mButton = (Button) mRootView.findViewById(R.id.playback_button);
+
         mSwitch = (Switch) mRootView.findViewById(R.id.offline_switch);
 
         mVideoPath = getString(R.string.wowza_vod_hls);
@@ -54,11 +57,31 @@ public class LiveScreenFragment extends Fragment {
             }
         });
 
+        // Go online if available
+        checkServerAvailability();
+
 
         // Sets up the twitter banner
         mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
-        mTwitterBannerWebView.loadUrl("file:///android_asset/banner.html");
+        mTwitterBannerWebView.loadUrl("http://www.thenomads.com/twitterticker/");
+//        mTwitterBannerWebView.loadUrl("file:///android_asset/banner.html");
 
         return mRootView;
     }
+
+    public void checkServerAvailability() {
+        new ReachabilityTest(mRootView.getContext(), "192.168.0.208", 1935, new ReachabilityTest.Callback() {
+            @Override
+            public void onReachabilityTestPassed() {
+                mSwitch.setChecked(true);
+            }
+
+            @Override
+            public void onReachabilityTestFailed() {
+                mSwitch.setChecked(false);
+            }
+        }).execute();
+    }
+
+
 }
