@@ -8,8 +8,10 @@ import android.os.AsyncTask;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
 
 /**
@@ -22,16 +24,52 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
     private int mServicePort;
     private Callback mCallback;
 
-//    public ReachabilityTest(Context context, String url, Callback callback) {
-//        // TODO Parse URL to get hostname and port.
-//
-//    }
+    public ReachabilityTest(Context context, String url, Callback callback) {
+
+        String hostname = getHostnameFromURL(url);
+        int servicePort = getPortFromURL(url);
+
+        mContext = context.getApplicationContext(); // Avoid leaking the Activity!
+        mHostname = hostname;
+        mServicePort = servicePort;
+        mCallback = callback;
+
+    }
 
     public ReachabilityTest(Context context, String hostname, int port, Callback callback) {
         mContext = context.getApplicationContext(); // Avoid leaking the Activity!
         mHostname = hostname;
         mServicePort = port;
         mCallback = callback;
+    }
+
+    private int getPortFromURL(String url) {
+
+        int port = 80;
+
+        try {
+            URL mURL = new URL(url);
+            port = mURL.getPort();
+
+            // If no port is found, use 80
+            port = port == -1 ? 80 : port;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return port;
+    }
+
+    private String getHostnameFromURL(String url) {
+
+        String hostname = url;
+
+        try {
+            URL mURL = new URL(url);
+            hostname = mURL.getHost();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return hostname;
     }
 
     @Override
