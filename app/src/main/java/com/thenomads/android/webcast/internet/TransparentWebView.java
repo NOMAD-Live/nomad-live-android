@@ -2,6 +2,7 @@ package com.thenomads.android.webcast.internet;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -53,9 +54,13 @@ public class TransparentWebView extends WebView {
     }
 
     private void setup() {
+        setBackgroundColor(Color.BLACK);
         makeBackgroundTransparent();
+
+//        if (!this.isInEditMode()) {
         WebSettings settings = this.getSettings();
         settings.setJavaScriptEnabled(true);
+//        }
     }
 
     private void makeBackgroundTransparent() {
@@ -72,7 +77,7 @@ public class TransparentWebView extends WebView {
                 // Launch another Activity that handles URLs
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 context.startActivity(intent);
-                return false;
+                return true;
             }
         });
     }
