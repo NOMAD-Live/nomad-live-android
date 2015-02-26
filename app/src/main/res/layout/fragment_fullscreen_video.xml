@@ -5,7 +5,7 @@
     <!-- The primary full-screen view. This can be replaced with whatever view
                  is needed to present your content, e.g. VideoView, SurfaceView,
                  TextureView, etc. -->
-    <com.thenomads.android.webcast.video.IntuitiveFullScreenVideoView xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.thenomads.android.nomadlive.video.IntuitiveFullScreenVideoView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|right" />
 
-        <com.thenomads.android.webcast.internet.TransparentWebView
+        <com.thenomads.android.nomadlive.internet.TransparentWebView
             android:id="@+id/twitter_banner"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

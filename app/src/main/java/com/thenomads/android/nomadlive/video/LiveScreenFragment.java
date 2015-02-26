@@ -1,4 +1,4 @@
-package com.thenomads.android.webcast.video;
+package com.thenomads.android.nomadlive.video;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,8 +10,8 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.VideoView;
 
-import com.thenomads.android.webcast.R;
-import com.thenomads.android.webcast.internet.ReachabilityTest;
+import com.thenomads.android.nomadlive.R;
+import com.thenomads.android.nomadlive.internet.ReachabilityTest;
 
 public class LiveScreenFragment extends Fragment {
 

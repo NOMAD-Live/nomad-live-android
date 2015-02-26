@@ -1,4 +1,4 @@
-package com.thenomads.android.webcast;
+package com.thenomads.android.nomadlive;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

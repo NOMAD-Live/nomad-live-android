@@ -1,10 +1,10 @@
-package com.thenomads.android.webcast;
+package com.thenomads.android.nomadlive;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.thenomads.android.webcast.video.LiveScreenFragment;
+import com.thenomads.android.nomadlive.video.LiveScreenFragment;
 
 class FragmentPageAdapter extends FragmentPagerAdapter {
 

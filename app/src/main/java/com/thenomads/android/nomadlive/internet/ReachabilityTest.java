@@ -1,4 +1,4 @@
-package com.thenomads.android.webcast.internet;
+package com.thenomads.android.nomadlive.internet;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

@@ -1,4 +1,4 @@
-package com.thenomads.android.webcast;
+package com.thenomads.android.nomadlive;
 /*
  * Copyright 2012 The Android Open Source Project
  *

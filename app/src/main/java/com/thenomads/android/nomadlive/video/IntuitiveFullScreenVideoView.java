@@ -1,4 +1,4 @@
-package com.thenomads.android.webcast.video;
+package com.thenomads.android.nomadlive.video;
 
 import android.content.Context;
 import android.media.MediaPlayer;
