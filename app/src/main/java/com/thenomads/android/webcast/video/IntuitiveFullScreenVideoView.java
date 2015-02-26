@@ -26,18 +26,18 @@ public class IntuitiveFullScreenVideoView extends VideoView {
     }
 
     private void initCustomFullScreenVideoView() {
-        this.autoStartOnReady();
+        this.autoStartOnReadyAndLoop();
         this.clickToPause();
     }
 
-    private void autoStartOnReady() {
+    private void autoStartOnReadyAndLoop() {
         this.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Play the video once the player is ready
             public void onPrepared(MediaPlayer mp) {
                 start();
+                mp.setLooping(true);
             }
         });
-
     }
 
     private void clickToPause() {
