@@ -67,6 +67,7 @@ public class TransparentWebView extends WebView {
         this.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
+                view.setVisibility(VISIBLE);
                 view.setBackgroundColor(0x00000000);
                 if (Build.VERSION.SDK_INT >= 11)
                     view.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
