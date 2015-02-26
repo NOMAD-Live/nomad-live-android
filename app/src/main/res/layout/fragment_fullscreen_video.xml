@@ -25,27 +25,19 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <LinearLayout
+        <Switch
+            android:id="@+id/offline_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right" />
+
+        <com.thenomads.android.webcast.internet.TransparentWebView
+            android:id="@+id/twitter_banner"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="bottom"
-            android:orientation="vertical">
-
-            <Switch
-                android:id="@+id/offline_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:gravity="fill_vertical" />
-
-            <com.thenomads.android.webcast.internet.TransparentWebView
-                android:id="@+id/twitter_banner"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:alpha="1"
-                android:visibility="gone" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:alpha="1"
+            android:visibility="gone" />
 
     </FrameLayout>
 </RelativeLayout>
