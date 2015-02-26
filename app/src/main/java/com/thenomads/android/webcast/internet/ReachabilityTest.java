@@ -19,10 +19,10 @@ import java.net.UnknownHostException;
  */
 public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
 
-    private Context mContext;
-    private String mHostname;
-    private int mServicePort;
-    private Callback mCallback;
+    private final Context mContext;
+    private final String mHostname;
+    private final int mServicePort;
+    private final Callback mCallback;
 
     public ReachabilityTest(Context context, String url, Callback callback) {
 

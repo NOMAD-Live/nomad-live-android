@@ -15,7 +15,7 @@ import android.webkit.WebViewClient;
  */
 public class TransparentWebView extends WebView {
 
-    private Context context;
+    private final Context context;
 
     /**
      * Construct a new TransparentWebView with a Context object.
@@ -57,10 +57,10 @@ public class TransparentWebView extends WebView {
         setBackgroundColor(Color.BLACK);
         makeBackgroundTransparent();
 
-//        if (!this.isInEditMode()) {
+        if (!this.isInEditMode()) {
         WebSettings settings = this.getSettings();
         settings.setJavaScriptEnabled(true);
-//        }
+        }
     }
 
     private void makeBackgroundTransparent() {
