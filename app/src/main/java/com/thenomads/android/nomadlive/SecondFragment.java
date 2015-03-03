@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 
 public class SecondFragment extends Fragment {
 
@@ -12,6 +13,13 @@ public class SecondFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_fullscreen_second, container, false);
+
+        View mRootView = inflater.inflate(R.layout.fragment_fullscreen_second, container, false);
+
+        WebView mAboutPage = (WebView) mRootView.findViewById(R.id.about_page);
+
+        mAboutPage.loadUrl(getString(R.string.about_page_file));
+
+        return mRootView;
     }
 }

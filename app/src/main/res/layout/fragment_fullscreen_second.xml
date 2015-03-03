@@ -5,34 +5,8 @@
     android:background="#0a0a0a"
     android:orientation="vertical">
 
-    <GridLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:columnCount="1"
-        android:rowCount="2">
-
-        <ImageView
-            android:id="@+id/nomad_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_margin="75dp"
-            android:layout_row="0"
-            android:contentDescription="@string/logo_alt_text"
-            android:src="@android:drawable/ic_dialog_info" />
-
-        <TextView
-            android:id="@+id/project_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_gravity="center"
-            android:layout_row="1"
-            android:gravity="center"
-            android:text="@string/second_view_text"
-            android:textColor="#fcfcfc"
-            android:textSize="20sp" />
-    </GridLayout>
-
+    <WebView
+        android:id="@+id/about_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>

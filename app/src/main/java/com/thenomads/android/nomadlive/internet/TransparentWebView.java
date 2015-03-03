@@ -58,8 +58,8 @@ public class TransparentWebView extends WebView {
         makeBackgroundTransparent();
 
         if (!this.isInEditMode()) {
-        WebSettings settings = this.getSettings();
-        settings.setJavaScriptEnabled(true);
+            WebSettings settings = this.getSettings();
+            settings.setJavaScriptEnabled(true);
         }
     }
 

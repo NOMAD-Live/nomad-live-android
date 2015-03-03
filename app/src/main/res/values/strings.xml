@@ -12,6 +12,7 @@
 </string>
     <string name="twitter_ticker_endpoint">http://www.thenomads.com/twitterticker/</string>
     <string name="twitter_ticker_fallback">file:///android_asset/banner.html</string>
+    <string name="about_page_file">file:///android_asset/about_page.html</string>
     <string name="logo_alt_text">NOMAD Logo</string>
 
 </resources>
