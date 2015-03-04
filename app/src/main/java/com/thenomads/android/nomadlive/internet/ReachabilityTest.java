@@ -102,11 +102,8 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
 
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
-        if (networkInfo != null && networkInfo.isConnected()) {
-            return true;
-        }
+        return networkInfo != null && networkInfo.isConnected();
 
-        return false;
     }
 
     private InetAddress isResolvable(String hostname) {
