@@ -6,74 +6,98 @@
 <title>About NOMAD</title>
 <style>
 body,html {
-	margin:0;
-	height:0;
-	background:#000;
-	color:#FFF;
-	width:100%;
-}
+    background:#000;
+    color:#FFF;
+    width:100%;
+    margin:0;
+    height:0;
+    }
 * {
-   -webkit-tap-highlight-color: rgba(0,0,0,0);
-   -webkit-tap-highlight-color: transparent; /* For some Androids */
-   outline: 0; 
-}
-a {
-	-webkit-tap-highlight-color: rgba(0,0,0,0);
-}
-a:hover {
-	color:#F60 !important
-}
-#wrapper {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent; /* For some Androids */
+    outline: 0;
+    }
+    a, a:link, a:visited, a:hover {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    background:transparent;
+    text-decoration: none;
+    border:none;
+    }
+    a svg, a:link svg, a:visited svg, a:hover svg {
+    text-decoration : none;
+    border:none;
+    }
+    a:hover {
+    color:#F60;
+    }
+    .wrapper {
 	width:100%;
 	text-align:center;
 	height:100vh;
 	position:relative;
 }
 .main-container {
-	margin: auto;
-	position: relative;
-	height: 100%;
-	width:100%;
-}
+    margin: auto;
+    position: relative;
+    height: 100%;
+    width:100%;
+    }
 .logo {
-	 fill: #fff; 
-	 width:80%;
-}
+    fill: #fff;
+    width:80%;
+    }
 .icon {
-  fill: #fff; 
+    fill: #fff;
   width:5%;
   height:auto;
   display:inline-block;
   padding: 0 30px;
 }
 .icon:hover {
-  fill: #ddd; 
-}
+    fill: #ddd;
+    }
 .subtitle {
-font-size: 3em;
-text-transform: uppercase;
-padding: 2% 0 0;
-}
+    font-size: 3em;
+    text-transform: uppercase;
+    padding: 2% 0 0;
+    }
 </style>
 </head>
 
 <body>
-<div id="wrapper">
-	<table class="main-container"><tr><td>
+<div class="wrapper">
+    <table class="main-container"><tr><td>
 		<div class="logo-container">
-			<svg class="logo logo-nomad"><use xlink:href="#logo-nomad"></use></svg>
-		</div>
+            <svg class="logo logo-nomad">
+                <use xlink:href="#logo-nomad"/>
+            </svg>
+        </div>
 		<div class="subtitle">24/7 Mtl Livecast</div>
 		<div class="links">
-			<a href="http://www.facebook.com/theNOMADStv"><svg class="icon icon-facebook2"><use xlink:href="#icon-facebook2"></use></svg></a>
-			<a href="http://twitter.com/nomadlivetv/"><svg class="icon icon-twitter2"><use xlink:href="#icon-twitter2"></use></svg></a>
-			<a href="https://instagram.com/nomadlivetv/"><svg class="icon icon-instagram"><use xlink:href="#icon-instagram"></use></svg></a>
-			<a href="http://vimeo.com/thenomads"><svg class="icon icon-vimeo2"><use xlink:href="#icon-vimeo2"></use></svg></a>
-		</div>
+            <a href="http://www.facebook.com/theNOMADStv">
+                <object type="image/svg+xml" data="#icon-facebook2"/>
+            </a>
+            <a href="http://twitter.com/nomadlivetv/">
+                <svg class="icon icon-twitter2">
+                    <use xlink:href="#icon-twitter2"/>
+                </svg>
+            </a>
+            <a href="https://instagram.com/nomadlivetv/">
+                <svg class="icon icon-instagram">
+                    <use xlink:href="#icon-instagram"/>
+                </svg>
+            </a>
+            <a href="http://vimeo.com/thenomads">
+                <svg class="icon icon-vimeo2">
+                    <use xlink:href="#icon-vimeo2"/>
+                </svg>
+            </a>
+        </div>
 	</td></tr></table>
 </div>
 
-<svg display="none" width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" display="none" width="0" height="0" version="1.1"
+     xmlns="http://www.w3.org/2000/svg">
 <defs>
 <symbol id="icon-facebook2" viewBox="0 0 1024 1024">
 	<title>facebook2</title>
@@ -596,12 +620,4 @@ padding: 2% 0 0;
 </defs>
 </svg>
 </body>
-
-
-
-
 </html>
-
-
-
-
