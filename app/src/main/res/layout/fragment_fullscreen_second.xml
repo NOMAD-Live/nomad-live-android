@@ -3,10 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0a0a0a"
+    android:gravity="center"
     android:orientation="vertical">
 
     <WebView
         android:id="@+id/about_page"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 </RelativeLayout>
