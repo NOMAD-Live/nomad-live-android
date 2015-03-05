@@ -26,15 +26,14 @@ public class IntuitiveFullScreenVideoView extends VideoView {
     }
 
     private void initCustomFullScreenVideoView() {
-        this.autoStartOnReadyAndLoop();
+        this.loopVideo();
         this.clickToPause();
     }
 
-    private void autoStartOnReadyAndLoop() {
+    private void loopVideo() {
         this.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Play the video once the player is ready
             public void onPrepared(MediaPlayer mp) {
-                start();
                 mp.setLooping(true);
             }
         });
@@ -62,6 +61,7 @@ public class IntuitiveFullScreenVideoView extends VideoView {
                                 return false;
                             } else {
                                 resume();
+                                start();
                                 toast("Resuming...");
 
                             }
