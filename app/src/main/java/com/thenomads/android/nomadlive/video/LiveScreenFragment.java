@@ -80,17 +80,10 @@ public class LiveScreenFragment extends Fragment {
                         mProgressBar.setVisibility(View.VISIBLE);
                         return true;
                     }
-                    case MediaPlayer.MEDIA_INFO_BUFFERING_END: {
-                        mProgressBar.setVisibility(View.VISIBLE);
-                        return true;
-                    }
                     case MediaPlayer.MEDIA_ERROR_IO: {
-                        mSwitch.setChecked(true);
                         mSwitch.setChecked(false);
                         return true;
                     }
-                    default:
-                        mProgressBar.animate();
                 }
                 return false;
             }
