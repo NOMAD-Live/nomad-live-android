@@ -2,14 +2,8 @@
 <resources>
 
     <string name="app_name">NOMAD Live</string>
-    <string name="wowza_vod_rtsp">rtsp://192.168.0.208:1935/vod/sample.mp4</string>
-    <string name="wowza_vod_hls">http://192.168.0.208:1935/vod/mp4:sample.mp4/playlist.m3u8</string>
-    <string name="wowza_live_webcam">rtsp://192.168.0.208:1935/live/webcam</string>
+    <string name="wowza_vod_hls">http://ec2-54-165-136-102.compute-1.amazonaws.com:1935/vod/mp4:sample.mp4/playlist.m3u8</string>
     <string name="wowza_live_hls">http://192.168.0.208:1935/live/myStream/playlist.m3u8</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="second_view_text">NOMAD connects to the heart of Montreal’s cultural, sporting, and community events.
-        Immersed, we tell the story from the perspective of the leaders, athletes, and artists at the heart of our great city.
-</string>
     <string name="twitter_ticker_endpoint">http://www.thenomads.com/twitterticker/</string>
     <string name="twitter_ticker_fallback">file:///android_asset/banner.html</string>
     <string name="about_page_file">file:///android_asset/about_page/index.html</string>
