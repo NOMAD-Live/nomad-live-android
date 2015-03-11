@@ -21,7 +21,7 @@ public class LiveScreenFragment extends Fragment {
     private Switch mSwitch;
     private String mVideoPath;
     private String mLocalPath;
-    private String mIntroPath;
+//    private String mIntroPath;
 
     private WebView mTwitterBannerWebView;
     private VideoView mLiveVideoView;
@@ -40,7 +40,7 @@ public class LiveScreenFragment extends Fragment {
 
         mVideoPath = getString(R.string.wowza_vod_hls);
         mLocalPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.dancefloor;
-        mIntroPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.nomad720p;
+//        mIntroPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.nomad720p;
 
 
         // Takes care of the video side, defaults to offline
@@ -62,6 +62,11 @@ public class LiveScreenFragment extends Fragment {
         retrieveTwitterTickerContent();
 
         return mRootView;
+    }
+
+    public void onStart() {
+        super.onStart();
+        mLiveVideoView.start();
     }
 
     private void displayLoadingSpinnerIfNeeded() {
