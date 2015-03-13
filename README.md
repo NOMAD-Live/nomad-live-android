@@ -1,8 +1,8 @@
-# nomad-live-android
+# `nomad-live-android`
 
 Share the action, be the motion.
 
-# Setup
+## Setup
 
 - Download [Android Studio](http://developer.android.com/sdk/index.html).
 - Add the following to your `~/.bashrc`
