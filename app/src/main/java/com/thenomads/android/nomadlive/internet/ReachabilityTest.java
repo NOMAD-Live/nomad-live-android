@@ -20,20 +20,14 @@ import java.net.UnknownHostException;
 public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
 
     private final Context mContext;
-    private final String mHostname;
-    private final int mServicePort;
     private final Callback mCallback;
+    private String mHostname;
+    private int mServicePort;
 
     public ReachabilityTest(Context context, String url, Callback callback) {
-
-        String hostname = getHostnameFromURL(url);
-        int servicePort = getPortFromURL(url);
-
-        mContext = context.getApplicationContext(); // Avoid leaking the Activity!
-        mHostname = hostname;
-        mServicePort = servicePort;
-        mCallback = callback;
-
+        this(context, "", 80, callback);
+        mHostname = getHostnameFromURL(url);
+        mServicePort = getPortFromURL(url);
     }
 
     public ReachabilityTest(Context context, String hostname, int port, Callback callback) {
@@ -45,18 +39,18 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
 
     private int getPortFromURL(String url) {
 
-        int port = 80;
+        int port = -1;
 
         try {
             URL mURL = new URL(url);
             port = mURL.getPort();
 
-            // If no port is found, use 80
-            port = port == -1 ? 80 : port;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return port;
+
+        // If no port is found, use 80
+        return port == -1 ? 80 : port;
     }
 
     private String getHostnameFromURL(String url) {
