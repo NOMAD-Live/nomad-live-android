@@ -1,5 +1,6 @@
 package com.thenomads.android.nomadlive.video;
 
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -66,7 +67,16 @@ public class LiveScreenFragment extends Fragment {
 
     public void onStart() {
         super.onStart();
-        mLiveVideoView.start();
+
+        int mScreenOrientation = getResources().getConfiguration().orientation;
+
+        // Waits for landscape before playing video
+        if (mScreenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            //TODO Listen for a single change to landscape then play video.
+            mLiveVideoView.start();
+        } else {
+            mLiveVideoView.start();
+        }
     }
 
     private void displayLoadingSpinnerIfNeeded() {
