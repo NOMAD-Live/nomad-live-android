@@ -25,7 +25,7 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
     private int mServicePort;
 
     public ReachabilityTest(Context context, String url, Callback callback) {
-        this(context, "", 80, callback);
+        this(context, "", -1, callback);
         mHostname = getHostnameFromURL(url);
         mServicePort = getPortFromURL(url);
     }
