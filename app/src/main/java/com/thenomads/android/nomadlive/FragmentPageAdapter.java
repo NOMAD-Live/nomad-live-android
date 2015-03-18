@@ -19,6 +19,8 @@ class FragmentPageAdapter extends FragmentPagerAdapter {
                 return new LiveScreenFragment();
             case 1:
                 return new SecondFragment();
+            case 2:
+                return new CameraFragment();
             default:
                 break;
         }
@@ -27,6 +29,6 @@ class FragmentPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 }

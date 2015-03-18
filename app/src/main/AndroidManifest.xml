@@ -22,5 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="io.kickflip.sdk.activity.BroadcastActivity"
+            android:keepScreenOn="true"
+            android:screenOrientation="landscape" />
+
     </application>
 </manifest>
