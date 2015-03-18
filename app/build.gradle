@@ -24,4 +24,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'io.kickflip:sdk:1.1.1'
+
+    testCompile 'junit:junit:4.12'
 }
