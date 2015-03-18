@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.thenomads.android.nomadlive.R;
 import com.thenomads.android.nomadlive.internet.ReachabilityTest;
 
 public class LiveScreenFragment extends Fragment {
+
+    private static final String TAG = "LiveScreenFragment";
 
     private View mRootView;
     private Switch mSwitch;
@@ -132,13 +135,13 @@ public class LiveScreenFragment extends Fragment {
                                          boolean isChecked) {
 
                 if (isChecked) {
-                    mLiveVideoView.stopPlayback();
                     mLiveVideoView.setVideoPath(mVideoPath);
                     mLiveVideoView.start();
+                    Log.i(TAG, "Now playing: " + mVideoPath);
                 } else {
-                    mLiveVideoView.stopPlayback();
                     mLiveVideoView.setVideoPath(mLocalPath);
                     mLiveVideoView.start();
+                    Log.i(TAG, "Now playing: " + mLocalPath);
                 }
 
             }
@@ -150,11 +153,13 @@ public class LiveScreenFragment extends Fragment {
             @Override
             public void onReachabilityTestPassed() {
                 mSwitch.setChecked(true);
+                Log.i(TAG, "Internet available.");
             }
 
             @Override
             public void onReachabilityTestFailed() {
                 mSwitch.setChecked(false);
+                Log.i(TAG, "Internet NOT available.");
             }
         }).execute();
     }
