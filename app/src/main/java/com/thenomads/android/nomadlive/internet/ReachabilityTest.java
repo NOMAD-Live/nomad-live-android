@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,22 +20,25 @@ import java.net.UnknownHostException;
  */
 public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
 
+    private static final String TAG = "ReachabilityTest";
     private final Context mContext;
     private final Callback mCallback;
     private String mHostname;
-    private int mServicePort;
+    private int mPort;
 
     public ReachabilityTest(Context context, String url, Callback callback) {
         this(context, "", -1, callback);
         mHostname = getHostnameFromURL(url);
-        mServicePort = getPortFromURL(url);
+        mPort = getPortFromURL(url);
     }
 
     public ReachabilityTest(Context context, String hostname, int port, Callback callback) {
-        mContext = context.getApplicationContext(); // Avoid leaking the Activity!
+        // Avoid leaking the Activity!
+        mContext = context != null ? context.getApplicationContext() : null;
+
         mHostname = hostname;
-        mServicePort = port;
         mCallback = callback;
+        mPort = port;
     }
 
     private int getPortFromURL(String url) {
@@ -46,11 +50,10 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
             port = mURL.getPort();
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();
         }
 
-        // If no port is found, use 80
-        return port == -1 ? 80 : port;
+        // If no port is found, use 1935
+        return port == -1 ? 1935 : port;
     }
 
     private String getHostnameFromURL(String url) {
@@ -68,13 +71,19 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... args) {
-        if (isConnected(mContext)) {
+        if (mContext == null || isConnected(mContext)) {
             InetAddress address = isResolvable(mHostname);
             if (address != null) {
-                if (canConnect(address, mServicePort)) {
+                if (canConnect(address, mPort)) {
                     return true;
+                } else {
+                    Log.d(TAG, "The port does not appear accessible: " + mPort);
                 }
+            } else {
+                Log.d(TAG, "The hostname does not appear resolvable: " + mHostname);
             }
+        } else {
+            Log.d(TAG, "Device does not have any connectivity service.");
         }
         return false;
     }
@@ -92,6 +101,13 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
     }
 
     private boolean isConnected(Context context) {
+
+        // Allows to continue without context.
+        if (context == null) {
+            Log.d(TAG, "No Context specified.");
+            return true;
+        }
+
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
