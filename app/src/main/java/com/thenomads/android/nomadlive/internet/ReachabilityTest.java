@@ -82,7 +82,6 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
             port = mURL.getPort();
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();
         }
 
         // If no port is found, use the provided default one.

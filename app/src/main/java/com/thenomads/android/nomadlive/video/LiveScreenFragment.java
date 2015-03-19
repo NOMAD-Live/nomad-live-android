@@ -112,7 +112,7 @@ public class LiveScreenFragment extends Fragment {
 
     private void retrieveTwitterTickerContent() {
 
-        new ReachabilityTest(mRootView.getContext(), getString(R.string.twitter_ticker_endpoint), new ReachabilityTest.Callback() {
+        new ReachabilityTest(getString(R.string.twitter_ticker_endpoint), 80, mRootView.getContext(), new ReachabilityTest.Callback() {
             @Override
             public void onReachabilityTestPassed() {
                 mTwitterBannerWebView.loadUrl(getString(R.string.twitter_ticker_endpoint));
@@ -149,7 +149,7 @@ public class LiveScreenFragment extends Fragment {
     }
 
     private void checkServerAvailability() {
-        new ReachabilityTest(mRootView.getContext(), mVideoPath, new ReachabilityTest.Callback() {
+        new ReachabilityTest(mVideoPath, 1935, mRootView.getContext(), new ReachabilityTest.Callback() {
             @Override
             public void onReachabilityTestPassed() {
                 mSwitch.setChecked(true);
