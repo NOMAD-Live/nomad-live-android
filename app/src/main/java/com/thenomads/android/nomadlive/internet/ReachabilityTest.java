@@ -26,22 +26,54 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
     private String mHostname;
     private int mPort;
 
-    public ReachabilityTest(Context context, String url, Callback callback) {
-        this(context, "", -1, callback);
+    public ReachabilityTest(String url, int defaultPort, Callback callback) {
+        this(null, "", -1, callback);
+
+        mPort = getPortFromURL(url, defaultPort);
         mHostname = getHostnameFromURL(url);
-        mPort = getPortFromURL(url);
+    }
+
+    /**
+     * This constructor should be avoided as it does not specify the default port.
+     *
+     * @param url
+     * @param context
+     * @param callback
+     */
+    @Deprecated
+    public ReachabilityTest(String url, Context context, Callback callback) {
+        this(context, "", -1, callback);
+    }
+
+    public ReachabilityTest(String url, int defaultPort, Context context, Callback callback) {
+        this(context, "", -1, callback);
+
+        mPort = getPortFromURL(url, defaultPort);
+        mHostname = getHostnameFromURL(url);
     }
 
     public ReachabilityTest(Context context, String hostname, int port, Callback callback) {
         // Avoid leaking the Activity!
-        mContext = context != null ? context.getApplicationContext() : null;
+        mContext = context == null ? null : context.getApplicationContext();
 
         mHostname = hostname;
         mCallback = callback;
         mPort = port;
     }
 
+    /**
+     * Maintains compatibility with older API.
+     * Defaults to port 80 if no port is found.
+     *
+     * @param url
+     * @return
+     */
+    @Deprecated
     private int getPortFromURL(String url) {
+        return getPortFromURL(url, 80);
+    }
+
+    private int getPortFromURL(String url, int defaultPort) {
 
         int port = -1;
 
@@ -50,12 +82,19 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
             port = mURL.getPort();
 
         } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
 
-        // If no port is found, use 1935
-        return port == -1 ? 1935 : port;
+        // If no port is found, use the provided default one.
+        return port == -1 ? defaultPort : port;
     }
 
+    /**
+     * If no host can be found in the given URL, it returns the URL itself.
+     *
+     * @param url
+     * @return
+     */
     private String getHostnameFromURL(String url) {
 
         String hostname = url;
@@ -73,6 +112,7 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... args) {
         if (mContext == null || isConnected(mContext)) {
             InetAddress address = isResolvable(mHostname);
+
             if (address != null) {
                 if (canConnect(address, mPort)) {
                     return true;
@@ -100,6 +140,12 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
         }
     }
 
+    /**
+     * Uses the Android {@code ConnectivityManager} to determine if there is any connection available.
+     *
+     * @param context
+     * @return
+     */
     private boolean isConnected(Context context) {
 
         // Allows to continue without context.
@@ -116,6 +162,12 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
 
     }
 
+    /**
+     * Tries and resolve the hostname to an InetAddress
+     *
+     * @param hostname
+     * @return
+     */
     private InetAddress isResolvable(String hostname) {
         try {
             return InetAddress.getByName(hostname);
