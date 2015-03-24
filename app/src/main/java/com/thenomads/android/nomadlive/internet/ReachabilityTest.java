@@ -42,7 +42,7 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
      */
     @Deprecated
     public ReachabilityTest(String url, Context context, Callback callback) {
-        this(context, "", -1, callback);
+        this(url, 80, context, callback);
     }
 
     public ReachabilityTest(String url, int defaultPort, Context context, Callback callback) {

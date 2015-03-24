@@ -8,7 +8,7 @@ import com.thenomads.android.nomadlive.video.LiveScreenFragment;
 
 class FragmentPageAdapter extends FragmentPagerAdapter {
 
-    static final int NUM_ITEMS = 2;
+    private static final int NUM_ITEMS = 2;
     private static final String TAG = "FragmentPageAdapter";
 
     public FragmentPageAdapter(FragmentManager fm) {

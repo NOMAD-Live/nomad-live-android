@@ -31,7 +31,7 @@ public class MainActivity extends FragmentActivity {
 
     private static final String TAG = "MainActivity";
 
-    public static boolean mKickflipReady = false;
+    private static boolean mKickflipReady = false;
 
     // By default, Kickflip stores video in a "Kickflip" directory on external storage
     private static String mRecordingOutputPath = new File(Environment.getExternalStorageDirectory(), "NOMADLive/index.m3u8").getAbsolutePath();
