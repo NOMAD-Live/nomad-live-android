@@ -75,9 +75,6 @@ private String mLocalPath;
         // Adds a spinner to give loading feedback to the user
         displayLoadingSpinnerIfNeeded();
 
-        // Go online if available
-        checkServerAvailability();
-
         // Sets up the twitter banner
         mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
         retrieveTwitterTickerContent();
@@ -88,6 +85,9 @@ private String mLocalPath;
     public void onStart() {
         super.onStart();
 
+        // Go online if available
+        checkServerAvailability();
+        
         mLiveVideoView.start();
 
     }
