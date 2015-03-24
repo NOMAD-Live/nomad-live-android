@@ -1,9 +1,10 @@
 package com.thenomads.android.nomadlive.video;
 
-import android.content.Intent;
-import android.content.res.Configuration;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,23 +17,31 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.VideoView;
 
+import com.thenomads.android.nomadlive.MainActivity;
 import com.thenomads.android.nomadlive.R;
 import com.thenomads.android.nomadlive.internet.ReachabilityTest;
+
+import java.io.File;
+
+import io.kickflip.sdk.Kickflip;
+import io.kickflip.sdk.api.json.Stream;
+import io.kickflip.sdk.av.BroadcastListener;
+import io.kickflip.sdk.av.SessionConfig;
+import io.kickflip.sdk.exception.KickflipException;
 
 public class LiveScreenFragment extends Fragment {
 
     private static final String TAG = "LiveScreenFragment";
-
+    // By default, Kickflip stores video in a "Kickflip" directory on external storage
+    private static String mRecordingOutputPath = new File(Environment.getExternalStorageDirectory(), "NOMADLive/index.m3u8").getAbsolutePath();
     private View mRootView;
     private Switch mSwitch;
     private String mVideoPath;
-    private String mLocalPath;
 //    private String mIntroPath;
-
+private String mLocalPath;
     private WebView mTwitterBannerWebView;
     private VideoView mLiveVideoView;
     private ProgressBar mProgressBar;
-
     private Button mBroadcastButton;
 
     @Override
@@ -79,24 +88,28 @@ public class LiveScreenFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        int mScreenOrientation = getResources().getConfiguration().orientation;
+        mLiveVideoView.start();
 
-        // Waits for landscape before playing video
-        if (mScreenOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            //TODO Listen for a single change to landscape then play video.
-            mLiveVideoView.start();
-        } else {
-            mLiveVideoView.start();
-        }
     }
 
     private void startBroadcastActivityOnClick() {
         View.OnClickListener mStartBroadcastListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(getActivity(),
-                        CameraActivity.class);
-                startActivity(mainIntent);
+
+                if (MainActivity.mKickflipReady) {
+                    startBroadcastingActivity();
+                } else {
+                    new AlertDialog.Builder(mRootView.getContext())
+                            .setTitle(getString(R.string.dialog_title_not_ready))
+                            .setMessage(getString(R.string.dialog_msg_not_ready))
+                            .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                }
             }
         };
 
@@ -183,5 +196,47 @@ public class LiveScreenFragment extends Fragment {
                 Log.i(TAG, "Internet NOT available.");
             }
         }).execute();
+    }
+
+    private void startBroadcastingActivity() {
+        configureNewBroadcast();
+
+        BroadcastListener mBroadcastListener = new BroadcastListener() {
+            @Override
+            public void onBroadcastStart() {
+                Log.i(TAG, "onBroadcastStart");
+            }
+
+            @Override
+            public void onBroadcastLive(Stream stream) {
+                Log.i(TAG, "onBroadcastLive @ " + stream.getKickflipUrl());
+            }
+
+            @Override
+            public void onBroadcastStop() {
+                Log.i(TAG, "onBroadcastStop");
+
+                // If you're manually injecting the BroadcastFragment,
+                // you'll want to remove/replace BroadcastFragment
+                // when the Broadcast is over.
+
+                //getFragmentManager().beginTransaction()
+                //    .replace(R.id.container, MainFragment.getInstance())
+                //    .commit();
+            }
+
+            @Override
+            public void onBroadcastError(KickflipException error) {
+                Log.i(TAG, "onBroadcastError " + error.getMessage());
+            }
+        };
+        Kickflip.startBroadcastActivity(getActivity(), mBroadcastListener);
+    }
+
+    private void configureNewBroadcast() {
+        // Should reset mRecordingOutputPath between recordings
+//        SessionConfig config = Util.create720pSessionConfig(mRecordingOutputPath);
+        SessionConfig config = Util.create420pSessionConfig(mRecordingOutputPath);
+        Kickflip.setSessionConfig(config);
     }
 }

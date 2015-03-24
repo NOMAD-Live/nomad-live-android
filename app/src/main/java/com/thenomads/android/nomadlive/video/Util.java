@@ -15,7 +15,7 @@ import io.kickflip.sdk.av.SessionConfig;
 /**
  * Created by David Brodsky on 3/20/14.
  */
-class Util {
+public class Util {
     //"04/03/2014 23:41:37",
     private static final SimpleDateFormat mMachineSdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.US);
 
