@@ -9,6 +9,7 @@ import com.thenomads.android.nomadlive.R;
 
 import java.io.File;
 
+import io.kickflip.sdk.Kickflip;
 import io.kickflip.sdk.activity.ImmersiveActivity;
 import io.kickflip.sdk.av.AVRecorder;
 import io.kickflip.sdk.av.SessionConfig;
@@ -30,6 +31,10 @@ public class CameraActivity extends ImmersiveActivity {
     private AVRecorder mRecorder;
     private Button mRecordingButton;
     private boolean mFirstRecording = true;
+
+    public CameraActivity() {
+        super();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +58,9 @@ public class CameraActivity extends ImmersiveActivity {
                 }
             }
         });
-        SessionConfig config = Util.create720pSessionConfig(createNewRecordingFile());
+        SessionConfig config = Util.create420pSessionConfig(createNewRecordingFile());
+        Kickflip.setSessionConfig(config);
+
         if (mRecorder == null) {
             // This null check exists because onCreate may be called in the process of
             // destroying the activity
@@ -75,7 +82,7 @@ public class CameraActivity extends ImmersiveActivity {
     }
 
     private String createNewRecordingFile() {
-        return new File(Environment.getExternalStorageDirectory(), String.format("MySampleApp/%d.mp4", System.currentTimeMillis())).getAbsolutePath();
+        return new File(Environment.getExternalStorageDirectory(), String.format("NOMADLive/%d.mp4", System.currentTimeMillis())).getAbsolutePath();
     }
 
     private void resetAVRecorder() {

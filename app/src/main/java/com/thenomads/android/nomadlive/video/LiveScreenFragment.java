@@ -1,5 +1,6 @@
 package com.thenomads.android.nomadlive.video;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -31,6 +33,8 @@ public class LiveScreenFragment extends Fragment {
     private VideoView mLiveVideoView;
     private ProgressBar mProgressBar;
 
+    private Button mBroadcastButton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,8 +43,9 @@ public class LiveScreenFragment extends Fragment {
         mLiveVideoView = (VideoView) mRootView.findViewById(R.id.fullscreen_content);
         mProgressBar = (ProgressBar) mRootView.findViewById(R.id.my_spinner);
 
-
         mSwitch = (Switch) mRootView.findViewById(R.id.offline_switch);
+
+        mBroadcastButton = (Button) mRootView.findViewById(R.id.record_button);
 
         mVideoPath = getString(R.string.wowza_vod_hls);
         mLocalPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.dancefloor;
@@ -51,6 +56,9 @@ public class LiveScreenFragment extends Fragment {
         mSwitch.setChecked(false);
         mSwitch.setTextOff("Offline");
         mSwitch.setTextOn("Online");
+
+        // Binds an action to the record button
+        startBroadcastActivityOnClick();
 
         // Makes sure the switch controls the playback (Server or Local)
         bindSwitchToVideoPlaybackSource();
@@ -80,6 +88,19 @@ public class LiveScreenFragment extends Fragment {
         } else {
             mLiveVideoView.start();
         }
+    }
+
+    private void startBroadcastActivityOnClick() {
+        View.OnClickListener mStartBroadcastListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(getActivity(),
+                        CameraActivity.class);
+                startActivity(mainIntent);
+            }
+        };
+
+        mBroadcastButton.setOnClickListener(mStartBroadcastListener);
     }
 
     private void displayLoadingSpinnerIfNeeded() {
