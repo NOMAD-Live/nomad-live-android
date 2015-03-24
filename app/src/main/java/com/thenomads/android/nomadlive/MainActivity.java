@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import java.io.File;
 
@@ -31,7 +32,7 @@ public class MainActivity extends FragmentActivity {
 
     private static final String TAG = "MainActivity";
 
-    private static boolean mKickflipReady = false;
+    public static boolean mKickflipReady = false;
 
     // By default, Kickflip stores video in a "Kickflip" directory on external storage
     private static String mRecordingOutputPath = new File(Environment.getExternalStorageDirectory(), "NOMADLive/index.m3u8").getAbsolutePath();
@@ -68,11 +69,13 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onSuccess(Response response) {
                 mKickflipReady = true;
+                Log.d(TAG, "Kickflip setup done; " + response.toString());
             }
 
             @Override
             public void onError(KickflipException error) {
-
+                Log.e(TAG, "Kickflip setup failed.");
+                error.printStackTrace();
             }
         });
     }
