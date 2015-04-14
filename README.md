@@ -2,6 +2,8 @@
 
 Share the action, be the motion.
 
+Get the nightly builds [here](http://bit.ly/NOMAD-Live-latest).
+
 ## Setup
 
 - Download [Android Studio](http://developer.android.com/sdk/index.html).
