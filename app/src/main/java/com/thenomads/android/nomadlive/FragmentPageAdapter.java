@@ -8,6 +8,9 @@ import com.thenomads.android.nomadlive.video.LiveScreenFragment;
 
 class FragmentPageAdapter extends FragmentPagerAdapter {
 
+    private static final int NUM_ITEMS = 2;
+    private static final String TAG = "FragmentPageAdapter";
+
     public FragmentPageAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -19,8 +22,6 @@ class FragmentPageAdapter extends FragmentPagerAdapter {
                 return new LiveScreenFragment();
             case 1:
                 return new SecondFragment();
-            case 2:
-                return new CameraFragment();
             default:
                 break;
         }
@@ -29,6 +30,6 @@ class FragmentPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return NUM_ITEMS;
     }
 }

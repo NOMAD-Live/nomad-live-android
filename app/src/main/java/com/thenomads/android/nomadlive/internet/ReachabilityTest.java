@@ -36,13 +36,13 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
     /**
      * This constructor should be avoided as it does not specify the default port.
      *
-     * @param url
-     * @param context
-     * @param callback
+     * @param url Web url of the form 'http://google.com:80'.
+     * @param context Context of the application.
+     * @param callback What to do if the connection succeeds/fails.
      */
     @Deprecated
     public ReachabilityTest(String url, Context context, Callback callback) {
-        this(context, "", -1, callback);
+        this(url, 80, context, callback);
     }
 
     public ReachabilityTest(String url, int defaultPort, Context context, Callback callback) {
@@ -65,8 +65,8 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
      * Maintains compatibility with older API.
      * Defaults to port 80 if no port is found.
      *
-     * @param url
-     * @return
+     * @param url Web url of the form 'http://google.com:443'.
+     * @return Would return 443 in this case.
      */
     @Deprecated
     private int getPortFromURL(String url) {
@@ -91,8 +91,8 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
     /**
      * If no host can be found in the given URL, it returns the URL itself.
      *
-     * @param url
-     * @return
+     * @param url Web url of the form 'http://google.com:80'.
+     * @return Would return google.com:80 in this case.
      */
     private String getHostnameFromURL(String url) {
 
@@ -140,10 +140,11 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
     }
 
     /**
-     * Uses the Android {@code ConnectivityManager} to determine if there is any connection available.
+     * Uses the Android {@code ConnectivityManager}
+     * to determine if there is any connection available.
      *
-     * @param context
-     * @return
+     * @param context of the application.
+     * @return false if no connection is possible.
      */
     private boolean isConnected(Context context) {
 
@@ -164,8 +165,8 @@ public class ReachabilityTest extends AsyncTask<Void, Void, Boolean> {
     /**
      * Tries and resolve the hostname to an InetAddress
      *
-     * @param hostname
-     * @return
+     * @param hostname Of the form 'google.com:80'.
+     * @return null if the hostname cannot be resolved.
      */
     private InetAddress isResolvable(String hostname) {
         try {

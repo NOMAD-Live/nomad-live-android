@@ -15,12 +15,18 @@ package com.thenomads.android.nomadlive;
  * limitations under the License.
  */
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 
 public class MainActivity extends FragmentActivity {
+
+    private static final String TAG = "MainActivity";
+
+    public static boolean mKickflipReady = false;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
@@ -48,5 +54,20 @@ public class MainActivity extends FragmentActivity {
         // user swipes between sections.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
+
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            openSettings();
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    private void openSettings() {
+        Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(i);
     }
 }

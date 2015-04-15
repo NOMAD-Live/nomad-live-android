@@ -112,7 +112,7 @@ public class ReachabilityTestTest extends TestCase {
      * assuming the connection failed.
      *
      * @param url a String of the form "http://localhost:1935"
-     * @return
+     * @return true if the url is reachable.
      * @throws Exception
      */
     private boolean testConnectionToServer(String url) throws Exception {
@@ -120,7 +120,7 @@ public class ReachabilityTestTest extends TestCase {
         final CountDownLatch signal = new CountDownLatch(1);
         boolean passed;
 
-        new ReachabilityTest(null, url, new ReachabilityTest.Callback() {
+        new ReachabilityTest(url, null, new ReachabilityTest.Callback() {
             @Override
             public void onReachabilityTestPassed() {
                 signal.countDown();
