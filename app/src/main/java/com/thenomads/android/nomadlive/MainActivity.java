@@ -14,28 +14,19 @@ package com.thenomads.android.nomadlive;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-
-import java.io.File;
-
-import io.kickflip.sdk.Kickflip;
-import io.kickflip.sdk.api.KickflipCallback;
-import io.kickflip.sdk.api.json.Response;
-import io.kickflip.sdk.exception.KickflipException;
+import android.view.KeyEvent;
 
 public class MainActivity extends FragmentActivity {
 
     private static final String TAG = "MainActivity";
 
     public static boolean mKickflipReady = false;
-
-    // By default, Kickflip stores video in a "Kickflip" directory on external storage
-    private static String mRecordingOutputPath = new File(Environment.getExternalStorageDirectory(), "NOMADLive/index.m3u8").getAbsolutePath();
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
@@ -64,19 +55,19 @@ public class MainActivity extends FragmentActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
 
-        // This must happen before any other Kickflip interactions
-        Kickflip.setup(this, SECRETS.CLIENT_KEY, SECRETS.CLIENT_SECRET, new KickflipCallback() {
-            @Override
-            public void onSuccess(Response response) {
-                mKickflipReady = true;
-                Log.d(TAG, "Kickflip setup done; " + response.toString());
-            }
+    }
 
-            @Override
-            public void onError(KickflipException error) {
-                Log.e(TAG, "Kickflip setup failed.");
-                error.printStackTrace();
-            }
-        });
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            openSettings();
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    private void openSettings() {
+        Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(i);
     }
 }

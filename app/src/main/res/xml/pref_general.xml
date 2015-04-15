@@ -1,0 +1,23 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_header_general">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="twitter_ticker"
+            android:summary="@string/pref_description_twitter_ticker"
+            android:title="@string/pref_title_twitter_ticker" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_header_beta_features">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="kickflip_broadcast"
+            android:summary="@string/pref_description_kickflip_broadcast"
+            android:title="@string/pref_title_kickflip_broadcast" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -2,9 +2,11 @@ package com.thenomads.android.nomadlive.video;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,11 +21,14 @@ import android.widget.VideoView;
 
 import com.thenomads.android.nomadlive.MainActivity;
 import com.thenomads.android.nomadlive.R;
+import com.thenomads.android.nomadlive.SECRETS;
 import com.thenomads.android.nomadlive.internet.ReachabilityTest;
 
 import java.io.File;
 
 import io.kickflip.sdk.Kickflip;
+import io.kickflip.sdk.api.KickflipCallback;
+import io.kickflip.sdk.api.json.Response;
 import io.kickflip.sdk.api.json.Stream;
 import io.kickflip.sdk.av.BroadcastListener;
 import io.kickflip.sdk.av.SessionConfig;
@@ -33,12 +38,12 @@ public class LiveScreenFragment extends Fragment {
 
     private static final String TAG = "LiveScreenFragment";
     // By default, Kickflip stores video in a "Kickflip" directory on external storage
-    private static String mRecordingOutputPath = new File(Environment.getExternalStorageDirectory(), "NOMADLive/index.m3u8").getAbsolutePath();
+    private final String mRecordingOutputPath = new File(Environment.getExternalStorageDirectory(), "NOMADLive/index.m3u8").getAbsolutePath();
     private View mRootView;
     private Switch mSwitch;
     private String mVideoPath;
-//    private String mIntroPath;
-private String mLocalPath;
+    //    private String mIntroPath;
+    private String mLocalPath;
     private WebView mTwitterBannerWebView;
     private VideoView mLiveVideoView;
     private ProgressBar mProgressBar;
@@ -56,6 +61,8 @@ private String mLocalPath;
 
         mBroadcastButton = (Button) mRootView.findViewById(R.id.record_button);
 
+        mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
+
         mVideoPath = getString(R.string.wowza_vod_hls);
         mLocalPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.dancefloor;
 //        mIntroPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.nomad720p;
@@ -66,8 +73,6 @@ private String mLocalPath;
         mSwitch.setTextOff("Offline");
         mSwitch.setTextOn("Online");
 
-        // Binds an action to the record button
-        startBroadcastActivityOnClick();
 
         // Makes sure the switch controls the playback (Server or Local)
         bindSwitchToVideoPlaybackSource();
@@ -75,24 +80,87 @@ private String mLocalPath;
         // Adds a spinner to give loading feedback to the user
         displayLoadingSpinnerIfNeeded();
 
-        // Sets up the twitter banner
-        mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
-        retrieveTwitterTickerContent();
-
         return mRootView;
     }
 
     public void onStart() {
         super.onStart();
 
+        handleBetaOptions();
+
         // Go online if available
         checkServerAvailability();
-        
+
         mLiveVideoView.start();
 
     }
 
+    private void handleBetaOptions() {
+
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getBaseContext());
+
+        boolean betaBroadcastFlag = SP.getBoolean("kickflip_broadcast", false);
+        boolean twitterTickerFlag = SP.getBoolean("twitter_ticker", true);
+
+        handleKickflipFlag(betaBroadcastFlag);
+
+        handleTwitterTickerFlag(twitterTickerFlag);
+    }
+
+    private boolean handleKickflipFlag(boolean betaBroadcastFlag) {
+
+        if (betaBroadcastFlag) {
+
+            setUpKickflip();
+
+            // Shows the button
+            mBroadcastButton.setVisibility(View.VISIBLE);
+
+            // Binds an action to the record button
+            startBroadcastActivityOnClick();
+            return true;
+        }
+
+        // Hides the broadcast button
+        mBroadcastButton.setVisibility(View.GONE);
+
+        return false;
+    }
+
+    private void setUpKickflip() {
+
+        // This must happen before any other Kickflip interactions
+        Kickflip.setup(getActivity().getBaseContext(), SECRETS.CLIENT_KEY, SECRETS.CLIENT_SECRET, new KickflipCallback() {
+            @Override
+            public void onSuccess(Response response) {
+                MainActivity.mKickflipReady = true;
+                Log.d(TAG, "Kickflip setup done; " + response.toString());
+            }
+
+            @Override
+            public void onError(KickflipException error) {
+                Log.e(TAG, "Kickflip setup failed.");
+                error.printStackTrace();
+            }
+        });
+    }
+
+    private boolean handleTwitterTickerFlag(boolean twitterTickerFlag) {
+
+        if (twitterTickerFlag) {
+            // Sets up the twitter banner
+            retrieveTwitterTickerContent();
+            return true;
+        }
+
+        // Hides the twitter banner
+        mTwitterBannerWebView.setVisibility(View.GONE);
+
+        return false;
+    }
+
     private void startBroadcastActivityOnClick() {
+
         View.OnClickListener mStartBroadcastListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,8 +225,6 @@ private String mLocalPath;
                 mTwitterBannerWebView.loadUrl(getString(R.string.twitter_ticker_fallback));
             }
         }).execute();
-//
-
     }
 
     private void bindSwitchToVideoPlaybackSource() {

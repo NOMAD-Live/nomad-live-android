@@ -56,5 +56,6 @@
         android:alpha=".7"
         android:background="@drawable/red_dot"
         android:clickable="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:visibility="gone" />
 </RelativeLayout>
