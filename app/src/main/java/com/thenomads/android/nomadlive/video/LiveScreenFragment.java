@@ -42,12 +42,15 @@ public class LiveScreenFragment extends Fragment {
     private View mRootView;
     private Switch mSwitch;
     private String mVideoPath;
-    //    private String mIntroPath;
+    // private String mIntroPath;
     private String mLocalPath;
     private WebView mTwitterBannerWebView;
     private VideoView mLiveVideoView;
     private ProgressBar mProgressBar;
     private Button mBroadcastButton;
+
+    private SharedPreferences SP;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +59,8 @@ public class LiveScreenFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.fragment_fullscreen_video, container, false);
         mLiveVideoView = (VideoView) mRootView.findViewById(R.id.fullscreen_content);
         mProgressBar = (ProgressBar) mRootView.findViewById(R.id.my_spinner);
+
+        SP = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getBaseContext());
 
         mSwitch = (Switch) mRootView.findViewById(R.id.offline_switch);
 
@@ -80,13 +85,13 @@ public class LiveScreenFragment extends Fragment {
         // Adds a spinner to give loading feedback to the user
         displayLoadingSpinnerIfNeeded();
 
+        handleBetaOptions();
+
         return mRootView;
     }
 
     public void onStart() {
         super.onStart();
-
-        handleBetaOptions();
 
         // Go online if available
         checkServerAvailability();
@@ -97,17 +102,15 @@ public class LiveScreenFragment extends Fragment {
 
     private void handleBetaOptions() {
 
-        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getBaseContext());
+        handleKickflipFlag();
 
-        boolean betaBroadcastFlag = SP.getBoolean("kickflip_broadcast", false);
-        boolean twitterTickerFlag = SP.getBoolean("twitter_ticker", true);
+        handleTwitterTickerFlag();
 
-        handleKickflipFlag(betaBroadcastFlag);
-
-        handleTwitterTickerFlag(twitterTickerFlag);
     }
 
-    private boolean handleKickflipFlag(boolean betaBroadcastFlag) {
+    private boolean handleKickflipFlag() {
+
+        boolean betaBroadcastFlag = SP.getBoolean("kickflip_broadcast", false);
 
         if (betaBroadcastFlag) {
 
@@ -129,6 +132,10 @@ public class LiveScreenFragment extends Fragment {
 
     private void setUpKickflip() {
 
+        // Do nothing if kickflip is already setup
+        if (MainActivity.mKickflipReady)
+            return;
+
         // This must happen before any other Kickflip interactions
         Kickflip.setup(getActivity().getBaseContext(), SECRETS.CLIENT_KEY, SECRETS.CLIENT_SECRET, new KickflipCallback() {
             @Override
@@ -145,9 +152,12 @@ public class LiveScreenFragment extends Fragment {
         });
     }
 
-    private boolean handleTwitterTickerFlag(boolean twitterTickerFlag) {
+    private boolean handleTwitterTickerFlag() {
+
+        boolean twitterTickerFlag = SP.getBoolean("twitter_ticker", true);
 
         if (twitterTickerFlag) {
+
             // Sets up the twitter banner
             retrieveTwitterTickerContent();
             return true;
@@ -213,6 +223,10 @@ public class LiveScreenFragment extends Fragment {
     }
 
     private void retrieveTwitterTickerContent() {
+
+        // Do nothing if the page is already loaded.
+        if (mTwitterBannerWebView.getUrl() == getString(R.string.twitter_ticker_endpoint))
+            return;
 
         new ReachabilityTest(getString(R.string.twitter_ticker_endpoint), 80, mRootView.getContext(), new ReachabilityTest.Callback() {
             @Override
