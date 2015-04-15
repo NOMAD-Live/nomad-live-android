@@ -13,6 +13,7 @@ import java.util.TimeZone;
 import io.kickflip.sdk.av.SessionConfig;
 
 /**
+ * A set of utilities from Kickflip.
  * Created by David Brodsky on 3/20/14.
  */
 public class Util {
