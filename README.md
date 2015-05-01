@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/NOMAD-Live/nomad-live-android.png?label=ready&title=Ready)](https://waffle.io/NOMAD-Live/nomad-live-android)
 # `nomad-live-android`
 
 Share the action, be the motion.
