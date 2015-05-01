@@ -67,6 +67,6 @@
     <string name="pref_header_beta_features">Beta Features</string>
 
     <string name="pref_title_kickflip_broadcast">Kickflip Broadcasting</string>
-    <string name="pref_description_kickflip_broadcast">Allows you to video stream from your phone.
+    <string name="pref_description_kickflip_broadcast">Allows you to stream video from your phone. (You will need to restart the app)
     </string>
 </resources>
