@@ -9,6 +9,11 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <uses-feature
         android:name="android.hardware.camera.front"
@@ -31,14 +36,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="io.kickflip.sdk.activity.BroadcastActivity"
-            android:keepScreenOn="true"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".video.CameraActivity"
-            android:configChanges="orientation|screenSize"
-            android:keepScreenOn="true"
-            android:screenOrientation="landscape" />
+            android:name="io.cine.android.BroadcastActivity"
+            android:label="CineIOBroadcastActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />

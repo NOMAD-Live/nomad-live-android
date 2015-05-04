@@ -1,11 +1,8 @@
 package com.thenomads.android.nomadlive.video;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,26 +16,18 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.VideoView;
 
-import com.thenomads.android.nomadlive.MainActivity;
 import com.thenomads.android.nomadlive.R;
 import com.thenomads.android.nomadlive.SECRETS;
 import com.thenomads.android.nomadlive.internet.ReachabilityTest;
 
-import java.io.File;
+import io.cine.android.BroadcastConfig;
+import io.cine.android.CineIoClient;
+import io.cine.android.CineIoConfig;
 
-import io.kickflip.sdk.Kickflip;
-import io.kickflip.sdk.api.KickflipCallback;
-import io.kickflip.sdk.api.json.Response;
-import io.kickflip.sdk.api.json.Stream;
-import io.kickflip.sdk.av.BroadcastListener;
-import io.kickflip.sdk.av.SessionConfig;
-import io.kickflip.sdk.exception.KickflipException;
 
 public class LiveScreenFragment extends Fragment {
 
     private static final String TAG = "LiveScreenFragment";
-    // By default, Kickflip stores video in a "Kickflip" directory on external storage
-    private final String mRecordingOutputPath = new File(Environment.getExternalStorageDirectory(), "NOMADLive/index.m3u8").getAbsolutePath();
     private View mRootView;
     private Switch mSwitch;
     private String mVideoPath;
@@ -132,24 +121,6 @@ public class LiveScreenFragment extends Fragment {
 
     private void setUpKickflip() {
 
-        // Do nothing if kickflip is already setup
-        if (MainActivity.mKickflipReady)
-            return;
-
-        // This must happen before any other Kickflip interactions
-        Kickflip.setup(getActivity().getBaseContext(), SECRETS.CLIENT_KEY, SECRETS.CLIENT_SECRET, new KickflipCallback() {
-            @Override
-            public void onSuccess(Response response) {
-                MainActivity.mKickflipReady = true;
-                Log.d(TAG, "Kickflip setup done; " + response.toString());
-            }
-
-            @Override
-            public void onError(KickflipException error) {
-                Log.e(TAG, "Kickflip setup failed.");
-                error.printStackTrace();
-            }
-        });
     }
 
     private boolean handleTwitterTickerFlag() {
@@ -175,19 +146,17 @@ public class LiveScreenFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (MainActivity.mKickflipReady) {
-                    startBroadcastingActivity();
-                } else {
-                    new AlertDialog.Builder(mRootView.getContext())
-                            .setTitle(getString(R.string.dialog_title_not_ready))
-                            .setMessage(getString(R.string.dialog_msg_not_ready))
-                            .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).show();
-                }
+                CineIoConfig config = new CineIoConfig();
+                config.setSecretKey(SECRETS.CINE_SECRET_KEY);
+                // config.setMasterKey(MASTER_KEY);
+                CineIoClient client = new CineIoClient(config);
+
+                BroadcastConfig bConfig = new BroadcastConfig();
+                bConfig.selectCamera("back");
+
+                String streamId = "553e46f75484820b000bb76e";
+
+                client.broadcast(streamId, bConfig, getActivity());
             }
         };
 
@@ -276,47 +245,5 @@ public class LiveScreenFragment extends Fragment {
                 Log.i(TAG, "Internet NOT available.");
             }
         }).execute();
-    }
-
-    private void startBroadcastingActivity() {
-        configureNewBroadcast();
-
-        BroadcastListener mBroadcastListener = new BroadcastListener() {
-            @Override
-            public void onBroadcastStart() {
-                Log.i(TAG, "onBroadcastStart");
-            }
-
-            @Override
-            public void onBroadcastLive(Stream stream) {
-                Log.i(TAG, "onBroadcastLive @ " + stream.getKickflipUrl());
-            }
-
-            @Override
-            public void onBroadcastStop() {
-                Log.i(TAG, "onBroadcastStop");
-
-                // If you're manually injecting the BroadcastFragment,
-                // you'll want to remove/replace BroadcastFragment
-                // when the Broadcast is over.
-
-                //getFragmentManager().beginTransaction()
-                //    .replace(R.id.container, MainFragment.getInstance())
-                //    .commit();
-            }
-
-            @Override
-            public void onBroadcastError(KickflipException error) {
-                Log.i(TAG, "onBroadcastError " + error.getMessage());
-            }
-        };
-        Kickflip.startBroadcastActivity(getActivity(), mBroadcastListener);
-    }
-
-    private void configureNewBroadcast() {
-        // Should reset mRecordingOutputPath between recordings
-//        SessionConfig config = Util.create720pSessionConfig(mRecordingOutputPath);
-        SessionConfig config = Util.create420pSessionConfig(mRecordingOutputPath);
-        Kickflip.setSessionConfig(config);
     }
 }
