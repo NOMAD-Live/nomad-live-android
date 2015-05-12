@@ -154,7 +154,7 @@ public class LiveScreenFragment extends Fragment {
                 BroadcastConfig bConfig = new BroadcastConfig();
                 bConfig.selectCamera("back");
 
-                String streamId = "553e46f75484820b000bb76e";
+                String streamId = "554cf071fc71760b00a78aad";
 
                 client.broadcast(streamId, bConfig, getActivity());
             }
