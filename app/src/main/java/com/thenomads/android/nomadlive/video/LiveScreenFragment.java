@@ -57,7 +57,7 @@ public class LiveScreenFragment extends Fragment {
 
         mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
 
-        mVideoPath = getString(R.string.wowza_vod_hls);
+        mVideoPath = getString(R.string.nomad_live_hls);
         mLocalPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.dancefloor;
 //        mIntroPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.nomad720p;
 
@@ -91,19 +91,19 @@ public class LiveScreenFragment extends Fragment {
 
     private void handleBetaOptions() {
 
-        handleKickflipFlag();
+        handleBoradcastFlag();
 
         handleTwitterTickerFlag();
 
     }
 
-    private boolean handleKickflipFlag() {
+    private boolean handleBoradcastFlag() {
 
-        boolean betaBroadcastFlag = SP.getBoolean("kickflip_broadcast", false);
+        boolean betaBroadcastFlag = SP.getBoolean("broadcast", false);
 
         if (betaBroadcastFlag) {
 
-            setUpKickflip();
+            setUpBroadcast();
 
             // Shows the button
             mBroadcastButton.setVisibility(View.VISIBLE);
@@ -119,7 +119,7 @@ public class LiveScreenFragment extends Fragment {
         return false;
     }
 
-    private void setUpKickflip() {
+    private void setUpBroadcast() {
 
     }
 
