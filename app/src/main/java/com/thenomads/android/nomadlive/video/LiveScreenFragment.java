@@ -28,6 +28,7 @@ import io.cine.android.CineIoConfig;
 public class LiveScreenFragment extends Fragment {
 
     private static final String TAG = "LiveScreenFragment";
+    private static boolean CONNECTED_TO_INTERNET = false;
     private View mRootView;
     private Switch mSwitch;
     private String mVideoPath;
@@ -37,9 +38,7 @@ public class LiveScreenFragment extends Fragment {
     private VideoView mLiveVideoView;
     private ProgressBar mProgressBar;
     private Button mBroadcastButton;
-
     private SharedPreferences SP;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,7 +68,7 @@ public class LiveScreenFragment extends Fragment {
 
 
         // Makes sure the switch controls the playback (Server or Local)
-        bindSwitchToVideoPlaybackSource();
+        // bindSwitchToVideoPlaybackSource();
 
         // Adds a spinner to give loading feedback to the user
         displayLoadingSpinnerIfNeeded();
@@ -179,10 +178,6 @@ public class LiveScreenFragment extends Fragment {
                         mProgressBar.setVisibility(View.VISIBLE);
                         return true;
                     }
-                    case MediaPlayer.MEDIA_ERROR_IO: {
-                        mSwitch.setChecked(false);
-                        return true;
-                    }
                 }
                 return false;
             }
@@ -235,14 +230,26 @@ public class LiveScreenFragment extends Fragment {
         new ReachabilityTest(mVideoPath, 1935, mRootView.getContext(), new ReachabilityTest.Callback() {
             @Override
             public void onReachabilityTestPassed() {
-                mSwitch.setChecked(true);
                 Log.i(TAG, "Internet available.");
+
+                if (!CONNECTED_TO_INTERNET) {
+                    mLiveVideoView.setVideoPath(mVideoPath);
+                    mLiveVideoView.start();
+                    Log.i(TAG, "Switched Playback to: " + mVideoPath);
+                }
+                CONNECTED_TO_INTERNET = true;
             }
 
             @Override
             public void onReachabilityTestFailed() {
-                mSwitch.setChecked(false);
                 Log.i(TAG, "Internet NOT available.");
+
+                // Switches right away to local if no internet is available
+                mLiveVideoView.setVideoPath(mLocalPath);
+                mLiveVideoView.start();
+                Log.i(TAG, "Switched Playback to: " + mLocalPath);
+
+                CONNECTED_TO_INTERNET = false;
             }
         }).execute();
     }
