@@ -38,7 +38,8 @@ public class ReachabilityTestTest extends TestCase {
 
         String address = s.getInetAddress().toString();
 
-        Log.d(TAG, "" + s);
+        Log.d(TAG, s.toString());
+        Log.d(TAG, address);
     }
 
     @Override

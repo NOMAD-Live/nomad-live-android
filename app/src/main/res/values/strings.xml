@@ -9,7 +9,7 @@
     <string name="twitter_ticker_fallback">file:///android_asset/offline_twitter_ticker.html</string>
     <string name="about_page_file">file:///android_asset/about_page/index.html</string>
 
-    <string name="dialog_title_not_ready">One Sec...</string>
-    <string name="dialog_msg_not_ready">We\'re still registering your Kickflip account. Try again in a few seconds.</string>
+    <string name="dialog_title_not_ready">One Sec…</string>
+    <string name="dialog_msg_not_ready">We\'re still registering your account. Try again in a few seconds.</string>
     <string name="dialog_ok">OK</string>
 </resources>

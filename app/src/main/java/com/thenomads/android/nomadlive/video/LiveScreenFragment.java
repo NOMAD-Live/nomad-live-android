@@ -91,13 +91,13 @@ public class LiveScreenFragment extends Fragment {
 
     private void handleBetaOptions() {
 
-        handleBoradcastFlag();
+        handleBroadcastFlag();
 
         handleTwitterTickerFlag();
 
     }
 
-    private boolean handleBoradcastFlag() {
+    private boolean handleBroadcastFlag() {
 
         boolean betaBroadcastFlag = SP.getBoolean("broadcast", false);
 
@@ -194,7 +194,7 @@ public class LiveScreenFragment extends Fragment {
     private void retrieveTwitterTickerContent() {
 
         // Do nothing if the page is already loaded.
-        if (mTwitterBannerWebView.getUrl() == getString(R.string.twitter_ticker_endpoint))
+        if (getString(R.string.twitter_ticker_endpoint).equals(mTwitterBannerWebView.getUrl()))
             return;
 
         new ReachabilityTest(getString(R.string.twitter_ticker_endpoint), 80, mRootView.getContext(), new ReachabilityTest.Callback() {
