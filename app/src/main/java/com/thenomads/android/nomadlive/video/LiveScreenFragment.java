@@ -18,7 +18,7 @@ import android.widget.VideoView;
 
 import com.thenomads.android.nomadlive.R;
 import com.thenomads.android.nomadlive.SECRETS;
-import com.thenomads.android.nomadlive.internet.ReachabilityTest;
+import com.thenomads.android.nomadlive.net.ReachabilityTest;
 
 import io.cine.android.BroadcastConfig;
 import io.cine.android.CineIoClient;

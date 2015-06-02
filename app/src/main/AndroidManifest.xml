@@ -39,7 +39,7 @@
             android:name="io.cine.android.BroadcastActivity"
             android:label="CineIOBroadcastActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings" />
     </application>
 

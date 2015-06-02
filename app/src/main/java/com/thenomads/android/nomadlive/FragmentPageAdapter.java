@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.thenomads.android.nomadlive.ui.SecondFragment;
 import com.thenomads.android.nomadlive.video.LiveScreenFragment;
 
 class FragmentPageAdapter extends FragmentPagerAdapter {

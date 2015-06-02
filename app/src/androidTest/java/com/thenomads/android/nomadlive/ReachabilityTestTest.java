@@ -2,7 +2,7 @@ package com.thenomads.android.nomadlive;
 
 import android.util.Log;
 
-import com.thenomads.android.nomadlive.internet.ReachabilityTest;
+import com.thenomads.android.nomadlive.net.ReachabilityTest;
 
 import junit.framework.TestCase;
 

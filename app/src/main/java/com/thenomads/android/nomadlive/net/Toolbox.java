@@ -1,4 +1,4 @@
-package com.thenomads.android.nomadlive.internet;
+package com.thenomads.android.nomadlive.net;
 
 /**
  * A small toolbox with small method useful for the project.

@@ -23,6 +23,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 
+import com.thenomads.android.nomadlive.ui.SettingsActivity;
+
 public class MainActivity extends FragmentActivity {
 
     private static final String TAG = "MainActivity";
