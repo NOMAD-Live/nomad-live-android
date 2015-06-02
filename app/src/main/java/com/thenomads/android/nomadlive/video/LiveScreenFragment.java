@@ -129,6 +129,7 @@ public class LiveScreenFragment extends Fragment {
 
         mBroadcastConfig = new BroadcastConfig();
         mBroadcastConfig.selectCamera("back");
+        mBroadcastConfig.lockOrientation("landscape");
 
 //        TODO: Make sure the quality gets actually set to 480p.
 //        Trying to fix #24
