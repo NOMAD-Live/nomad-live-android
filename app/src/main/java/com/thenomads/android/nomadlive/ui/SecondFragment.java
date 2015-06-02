@@ -1,4 +1,4 @@
-package com.thenomads.android.nomadlive;
+package com.thenomads.android.nomadlive.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
+
+import com.thenomads.android.nomadlive.R;
 
 public class SecondFragment extends Fragment {
 

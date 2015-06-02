@@ -2,7 +2,7 @@ package com.thenomads.android.nomadlive;
 
 import android.util.Log;
 
-import com.thenomads.android.nomadlive.internet.ReachabilityTest;
+import com.thenomads.android.nomadlive.net.ReachabilityTest;
 
 import junit.framework.TestCase;
 
@@ -38,7 +38,8 @@ public class ReachabilityTestTest extends TestCase {
 
         String address = s.getInetAddress().toString();
 
-        Log.d(TAG, "" + s);
+        Log.d(TAG, s.toString());
+        Log.d(TAG, address);
     }
 
     @Override

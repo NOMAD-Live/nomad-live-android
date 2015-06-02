@@ -36,7 +36,7 @@
             android:layout_gravity="top|right"
             android:visibility="gone" />
 
-        <com.thenomads.android.nomadlive.internet.TransparentWebView
+        <com.thenomads.android.nomadlive.net.TransparentWebView
             android:id="@+id/twitter_banner"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

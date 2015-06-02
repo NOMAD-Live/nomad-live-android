@@ -1,11 +1,8 @@
 package com.thenomads.android.nomadlive.video;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,26 +16,19 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.VideoView;
 
-import com.thenomads.android.nomadlive.MainActivity;
 import com.thenomads.android.nomadlive.R;
 import com.thenomads.android.nomadlive.SECRETS;
-import com.thenomads.android.nomadlive.internet.ReachabilityTest;
+import com.thenomads.android.nomadlive.net.ReachabilityTest;
 
-import java.io.File;
+import io.cine.android.BroadcastConfig;
+import io.cine.android.CineIoClient;
+import io.cine.android.CineIoConfig;
 
-import io.kickflip.sdk.Kickflip;
-import io.kickflip.sdk.api.KickflipCallback;
-import io.kickflip.sdk.api.json.Response;
-import io.kickflip.sdk.api.json.Stream;
-import io.kickflip.sdk.av.BroadcastListener;
-import io.kickflip.sdk.av.SessionConfig;
-import io.kickflip.sdk.exception.KickflipException;
 
 public class LiveScreenFragment extends Fragment {
 
     private static final String TAG = "LiveScreenFragment";
-    // By default, Kickflip stores video in a "Kickflip" directory on external storage
-    private final String mRecordingOutputPath = new File(Environment.getExternalStorageDirectory(), "NOMADLive/index.m3u8").getAbsolutePath();
+    private static boolean CONNECTED_TO_INTERNET = false;
     private View mRootView;
     private Switch mSwitch;
     private String mVideoPath;
@@ -48,9 +38,7 @@ public class LiveScreenFragment extends Fragment {
     private VideoView mLiveVideoView;
     private ProgressBar mProgressBar;
     private Button mBroadcastButton;
-
     private SharedPreferences SP;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,7 +56,7 @@ public class LiveScreenFragment extends Fragment {
 
         mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
 
-        mVideoPath = getString(R.string.wowza_vod_hls);
+        mVideoPath = getString(R.string.nomad_live_hls);
         mLocalPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.dancefloor;
 //        mIntroPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.nomad720p;
 
@@ -80,7 +68,7 @@ public class LiveScreenFragment extends Fragment {
 
 
         // Makes sure the switch controls the playback (Server or Local)
-        bindSwitchToVideoPlaybackSource();
+        // bindSwitchToVideoPlaybackSource();
 
         // Adds a spinner to give loading feedback to the user
         displayLoadingSpinnerIfNeeded();
@@ -102,19 +90,19 @@ public class LiveScreenFragment extends Fragment {
 
     private void handleBetaOptions() {
 
-        handleKickflipFlag();
+        handleBroadcastFlag();
 
         handleTwitterTickerFlag();
 
     }
 
-    private boolean handleKickflipFlag() {
+    private boolean handleBroadcastFlag() {
 
-        boolean betaBroadcastFlag = SP.getBoolean("kickflip_broadcast", false);
+        boolean betaBroadcastFlag = SP.getBoolean("broadcast", false);
 
         if (betaBroadcastFlag) {
 
-            setUpKickflip();
+            setUpBroadcast();
 
             // Shows the button
             mBroadcastButton.setVisibility(View.VISIBLE);
@@ -130,26 +118,8 @@ public class LiveScreenFragment extends Fragment {
         return false;
     }
 
-    private void setUpKickflip() {
+    private void setUpBroadcast() {
 
-        // Do nothing if kickflip is already setup
-        if (MainActivity.mKickflipReady)
-            return;
-
-        // This must happen before any other Kickflip interactions
-        Kickflip.setup(getActivity().getBaseContext(), SECRETS.CLIENT_KEY, SECRETS.CLIENT_SECRET, new KickflipCallback() {
-            @Override
-            public void onSuccess(Response response) {
-                MainActivity.mKickflipReady = true;
-                Log.d(TAG, "Kickflip setup done; " + response.toString());
-            }
-
-            @Override
-            public void onError(KickflipException error) {
-                Log.e(TAG, "Kickflip setup failed.");
-                error.printStackTrace();
-            }
-        });
     }
 
     private boolean handleTwitterTickerFlag() {
@@ -175,19 +145,17 @@ public class LiveScreenFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (MainActivity.mKickflipReady) {
-                    startBroadcastingActivity();
-                } else {
-                    new AlertDialog.Builder(mRootView.getContext())
-                            .setTitle(getString(R.string.dialog_title_not_ready))
-                            .setMessage(getString(R.string.dialog_msg_not_ready))
-                            .setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).show();
-                }
+                CineIoConfig config = new CineIoConfig();
+                config.setSecretKey(SECRETS.CINE_SECRET_KEY);
+                // config.setMasterKey(MASTER_KEY);
+                CineIoClient client = new CineIoClient(config);
+
+                BroadcastConfig bConfig = new BroadcastConfig();
+                bConfig.selectCamera("back");
+
+                String streamId = "554cf071fc71760b00a78aad";
+
+                client.broadcast(streamId, bConfig, getActivity());
             }
         };
 
@@ -210,10 +178,6 @@ public class LiveScreenFragment extends Fragment {
                         mProgressBar.setVisibility(View.VISIBLE);
                         return true;
                     }
-                    case MediaPlayer.MEDIA_ERROR_IO: {
-                        mSwitch.setChecked(false);
-                        return true;
-                    }
                 }
                 return false;
             }
@@ -225,7 +189,7 @@ public class LiveScreenFragment extends Fragment {
     private void retrieveTwitterTickerContent() {
 
         // Do nothing if the page is already loaded.
-        if (mTwitterBannerWebView.getUrl() == getString(R.string.twitter_ticker_endpoint))
+        if (getString(R.string.twitter_ticker_endpoint).equals(mTwitterBannerWebView.getUrl()))
             return;
 
         new ReachabilityTest(getString(R.string.twitter_ticker_endpoint), 80, mRootView.getContext(), new ReachabilityTest.Callback() {
@@ -266,57 +230,27 @@ public class LiveScreenFragment extends Fragment {
         new ReachabilityTest(mVideoPath, 1935, mRootView.getContext(), new ReachabilityTest.Callback() {
             @Override
             public void onReachabilityTestPassed() {
-                mSwitch.setChecked(true);
                 Log.i(TAG, "Internet available.");
+
+                if (!CONNECTED_TO_INTERNET) {
+                    mLiveVideoView.setVideoPath(mVideoPath);
+                    mLiveVideoView.start();
+                    Log.i(TAG, "Switched Playback to: " + mVideoPath);
+                }
+                CONNECTED_TO_INTERNET = true;
             }
 
             @Override
             public void onReachabilityTestFailed() {
-                mSwitch.setChecked(false);
                 Log.i(TAG, "Internet NOT available.");
+
+                // Switches right away to local if no internet is available
+                mLiveVideoView.setVideoPath(mLocalPath);
+                mLiveVideoView.start();
+                Log.i(TAG, "Switched Playback to: " + mLocalPath);
+
+                CONNECTED_TO_INTERNET = false;
             }
         }).execute();
-    }
-
-    private void startBroadcastingActivity() {
-        configureNewBroadcast();
-
-        BroadcastListener mBroadcastListener = new BroadcastListener() {
-            @Override
-            public void onBroadcastStart() {
-                Log.i(TAG, "onBroadcastStart");
-            }
-
-            @Override
-            public void onBroadcastLive(Stream stream) {
-                Log.i(TAG, "onBroadcastLive @ " + stream.getKickflipUrl());
-            }
-
-            @Override
-            public void onBroadcastStop() {
-                Log.i(TAG, "onBroadcastStop");
-
-                // If you're manually injecting the BroadcastFragment,
-                // you'll want to remove/replace BroadcastFragment
-                // when the Broadcast is over.
-
-                //getFragmentManager().beginTransaction()
-                //    .replace(R.id.container, MainFragment.getInstance())
-                //    .commit();
-            }
-
-            @Override
-            public void onBroadcastError(KickflipException error) {
-                Log.i(TAG, "onBroadcastError " + error.getMessage());
-            }
-        };
-        Kickflip.startBroadcastActivity(getActivity(), mBroadcastListener);
-    }
-
-    private void configureNewBroadcast() {
-        // Should reset mRecordingOutputPath between recordings
-//        SessionConfig config = Util.create720pSessionConfig(mRecordingOutputPath);
-        SessionConfig config = Util.create420pSessionConfig(mRecordingOutputPath);
-        Kickflip.setSessionConfig(config);
     }
 }

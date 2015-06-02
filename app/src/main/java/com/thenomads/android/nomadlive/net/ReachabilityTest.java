@@ -1,4 +1,4 @@
-package com.thenomads.android.nomadlive.internet;
+package com.thenomads.android.nomadlive.net;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
