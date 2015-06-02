@@ -40,6 +40,9 @@ public class LiveScreenFragment extends Fragment {
     private Button mBroadcastButton;
     private SharedPreferences SP;
 
+    private CineIoClient mCineIoClient;
+    private BroadcastConfig mBroadcastConfig;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -119,7 +122,18 @@ public class LiveScreenFragment extends Fragment {
     }
 
     private void setUpBroadcast() {
+        CineIoConfig config = new CineIoConfig();
+        config.setSecretKey(SECRETS.CINE_SECRET_KEY);
+        // config.setMasterKey(MASTER_KEY);
+        mCineIoClient = new CineIoClient(config);
 
+        mBroadcastConfig = new BroadcastConfig();
+        mBroadcastConfig.selectCamera("back");
+
+//        TODO: Make sure the quality gets actually set to 480p.
+//        Trying to fix #24
+//        mBroadcastConfig.setHeight(480);
+//        mBroadcastConfig.setWidth(720);
     }
 
     private boolean handleTwitterTickerFlag() {
@@ -145,17 +159,9 @@ public class LiveScreenFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                CineIoConfig config = new CineIoConfig();
-                config.setSecretKey(SECRETS.CINE_SECRET_KEY);
-                // config.setMasterKey(MASTER_KEY);
-                CineIoClient client = new CineIoClient(config);
-
-                BroadcastConfig bConfig = new BroadcastConfig();
-                bConfig.selectCamera("back");
-
                 String streamId = "554cf071fc71760b00a78aad";
 
-                client.broadcast(streamId, bConfig, getActivity());
+                mCineIoClient.broadcast(streamId, mBroadcastConfig, getActivity());
             }
         };
 
@@ -176,6 +182,12 @@ public class LiveScreenFragment extends Fragment {
                     }
                     case MediaPlayer.MEDIA_INFO_BUFFERING_START: {
                         mProgressBar.setVisibility(View.VISIBLE);
+                        return true;
+                    }
+                    // Progress bar was here even after video started playing.
+                    // TODO: Test more.
+                    case MediaPlayer.MEDIA_INFO_BUFFERING_END: {
+                        mProgressBar.setVisibility(View.GONE);
                         return true;
                     }
                 }
