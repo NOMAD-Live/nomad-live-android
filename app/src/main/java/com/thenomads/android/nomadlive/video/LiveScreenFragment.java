@@ -81,6 +81,12 @@ public class LiveScreenFragment extends Fragment {
         return mRootView;
     }
 
+    public void onResume() {
+        super.onResume();
+
+        // Makes sure the settings have been applied.
+        handleBetaOptions();
+    }
     public void onStart() {
         super.onStart();
 
