@@ -19,6 +19,7 @@ import android.widget.VideoView;
 import com.thenomads.android.nomadlive.R;
 import com.thenomads.android.nomadlive.SECRETS;
 import com.thenomads.android.nomadlive.net.ReachabilityTest;
+import com.thenomads.android.nomadlive.net.TwitterTicker;
 
 import io.cine.android.BroadcastConfig;
 import io.cine.android.CineIoClient;
@@ -34,7 +35,6 @@ public class LiveScreenFragment extends Fragment {
     private String mVideoPath;
     // private String mIntroPath;
     private String mLocalPath;
-    private WebView mTwitterBannerWebView;
     private VideoView mLiveVideoView;
     private ProgressBar mProgressBar;
     private Button mBroadcastButton;
@@ -42,6 +42,8 @@ public class LiveScreenFragment extends Fragment {
 
     private CineIoClient mCineIoClient;
     private BroadcastConfig mBroadcastConfig;
+
+    private TwitterTicker mTwitterTicker;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,7 +59,8 @@ public class LiveScreenFragment extends Fragment {
 
         mBroadcastButton = (Button) mRootView.findViewById(R.id.record_button);
 
-        mTwitterBannerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
+        WebView twitterTickerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
+        mTwitterTicker = new TwitterTicker(twitterTickerWebView, this.getActivity());
 
         mVideoPath = getString(R.string.nomad_live_hls);
         mLocalPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.dancefloor;
@@ -86,15 +89,19 @@ public class LiveScreenFragment extends Fragment {
 
         // Makes sure the settings have been applied.
         handleBetaOptions();
-    }
-    public void onStart() {
-        super.onStart();
 
         // Go online if available
         checkServerAvailability();
 
         mLiveVideoView.start();
+    }
 
+    public void onPause() {
+        super.onPause();
+
+        if (mLiveVideoView.canPause()) {
+            mLiveVideoView.pause();
+        }
     }
 
     private void handleBetaOptions() {
@@ -103,6 +110,18 @@ public class LiveScreenFragment extends Fragment {
 
         handleTwitterTickerFlag();
 
+    }
+
+    private boolean handleTwitterTickerFlag() {
+        boolean twitterTickerFlag = SP.getBoolean("twitter_ticker", true);
+
+        if (twitterTickerFlag) {
+            mTwitterTicker.setup();
+            mTwitterTicker.show();
+            return true;
+        }
+        mTwitterTicker.hide();
+        return false;
     }
 
     private boolean handleBroadcastFlag() {
@@ -141,23 +160,6 @@ public class LiveScreenFragment extends Fragment {
 //        Trying to fix #24
 //        mBroadcastConfig.setHeight(480);
 //        mBroadcastConfig.setWidth(720);
-    }
-
-    private boolean handleTwitterTickerFlag() {
-
-        boolean twitterTickerFlag = SP.getBoolean("twitter_ticker", true);
-
-        if (twitterTickerFlag) {
-
-            // Sets up the twitter banner
-            retrieveTwitterTickerContent();
-            return true;
-        }
-
-        // Hides the twitter banner
-        mTwitterBannerWebView.setVisibility(View.GONE);
-
-        return false;
     }
 
     private void startBroadcastActivityOnClick() {
@@ -203,25 +205,6 @@ public class LiveScreenFragment extends Fragment {
         };
 
         mLiveVideoView.setOnInfoListener(onInfoToPlayStateListener);
-    }
-
-    private void retrieveTwitterTickerContent() {
-
-        // Do nothing if the page is already loaded.
-        if (getString(R.string.twitter_ticker_endpoint).equals(mTwitterBannerWebView.getUrl()))
-            return;
-
-        new ReachabilityTest(getString(R.string.twitter_ticker_endpoint), 80, mRootView.getContext(), new ReachabilityTest.Callback() {
-            @Override
-            public void onReachabilityTestPassed() {
-                mTwitterBannerWebView.loadUrl(getString(R.string.twitter_ticker_endpoint));
-            }
-
-            @Override
-            public void onReachabilityTestFailed() {
-                mTwitterBannerWebView.loadUrl(getString(R.string.twitter_ticker_fallback));
-            }
-        }).execute();
     }
 
     private void bindSwitchToVideoPlaybackSource() {
