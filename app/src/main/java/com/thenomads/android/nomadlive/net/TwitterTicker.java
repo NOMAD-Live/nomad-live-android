@@ -1,6 +1,7 @@
 package com.thenomads.android.nomadlive.net;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 
@@ -12,6 +13,7 @@ import com.thenomads.android.nomadlive.R;
  */
 public class TwitterTicker {
 
+    private static final String TAG = "TwitterTicker";
     private String onlineURL;
     private String offlineURL;
 
@@ -37,11 +39,13 @@ public class TwitterTicker {
         new ReachabilityTest(onlineURL, 80, context, new ReachabilityTest.Callback() {
             @Override
             public void onReachabilityTestPassed() {
+                Log.i(TAG, onlineURL + " available.");
                 webView.loadUrl(onlineURL);
             }
 
             @Override
             public void onReachabilityTestFailed() {
+                Log.e(TAG, onlineURL + " unavailable.");
                 webView.loadUrl(offlineURL);
             }
         }).execute();
