@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">NOMAD Live</string>
-    <string name="nomad_live_hls">http://api.nomadlive.tv/hls/test.m3u8</string>
+    <string name="nomad_live_hls">http://stream.nomadlive.tv/hls/test.m3u8</string>
     <string name="twitter_ticker_endpoint">http://www.thenomads.com/twitterticker/</string>
     <string name="twitter_ticker_fallback">file:///android_asset/offline_twitter_ticker.html</string>
     <string name="about_page_file">file:///android_asset/about_page/index.html</string>
