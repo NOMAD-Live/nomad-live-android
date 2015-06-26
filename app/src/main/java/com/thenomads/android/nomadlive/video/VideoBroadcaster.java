@@ -12,7 +12,6 @@ import io.cine.android.BroadcastConfig;
 import io.cine.android.CineIoClient;
 import io.cine.android.CineIoConfig;
 import io.swagger.client.ApiException;
-import io.swagger.client.api.HeartbeatApi;
 import io.swagger.client.api.StreamsApi;
 import io.swagger.client.model.Stream;
 
@@ -29,10 +28,10 @@ public class VideoBroadcaster {
     private Button mBroadcastButton;
     private Context mContext;
 
-    private HeartbeatApi heartbeatApi;
+    private Heartbeater heartbeater;
     private StreamsApi streamsApi;
     private Stream currentStream;
-    private boolean isStreaming = false;
+    private boolean streamingState = false;
 
     public VideoBroadcaster(Button b, Context c) {
         this.mBroadcastButton = b;
@@ -65,61 +64,56 @@ public class VideoBroadcaster {
             @Override
             public void onClick(View v) {
 
-                // Uses the current stream or get a new one
-                if (currentStream == null) {
-                    new AsyncTask<Void, Void, Stream>() {
-                        protected Stream doInBackground(Void... params) {
-                            try {
-                                return streamsApi.streamsPost();
+                new AsyncTask<Void, Void, Stream>() {
+                    protected Stream doInBackground(Void... params) {
+                        try {
+                            Log.v(TAG, "Asking for a new stream...");
+                            return streamsApi.streamsPost();
 
-                            } catch (ApiException e) {
-                                showAPIError("" + e.getCode(), e.getMessage());
-                                e.printStackTrace();
-                            }
-                            return null;
+                        } catch (ApiException e) {
+                            showAPIError(e);
+                            e.printStackTrace();
                         }
+                        return null;
+                    }
 
-                        @Override
-                        public void onPostExecute(Stream result) {
+                    @Override
+                    public void onPostExecute(Stream result) {
 
-                            super.onPostExecute(result);
+                        super.onPostExecute(result);
 
-                            if (result != null)
-                                broadcast(result);
-                            else
-                                Log.e(TAG, "Unable to get a new stream.");
+                        if (result != null) {
+                            currentStream = result;
+                            Log.v(TAG, "Got new stream: " + result);
+                            broadcast(currentStream);
+                        } else {
+                            Log.e(TAG, "Unable to get a new stream.");
                         }
-                    }.execute();
-                } else {
-                    broadcast(currentStream);
-                }
-
-
-
+                    }
+                }.execute();
             }
         };
 
         mBroadcastButton.setOnClickListener(mStartBroadcastListener);
     }
 
-    public void setStreamingState(boolean isStreaming) {
-        this.isStreaming = isStreaming;
+    public void setStreamingState(boolean newStreamingState) {
+        this.streamingState = newStreamingState;
     }
 
     public boolean isStreaming() {
-        return this.isStreaming;
+        return this.streamingState;
     }
 
     private void broadcast(Stream stream) {
 
-        this.currentStream = stream;
-
         if (stream != null && !this.isStreaming()) {
 
-            Log.i(TAG, "Starting broadcast on stream " + stream);
             Log.i(TAG, "Starting broadcast on stream " + stream.getId());
             mCineIoClient.broadcast(stream.getId(), mBroadcastConfig, mContext);
             this.setStreamingState(true);
+            heartbeater = new Heartbeater(stream);
+            heartbeater.start();
         }
     }
 
@@ -140,8 +134,7 @@ public class VideoBroadcaster {
                         return streamsApi.streamStreamIdDelete(id, password, password);
 
                     } catch (ApiException e) {
-                        showAPIError("" + e.getCode(), e.getMessage());
-                        // e.printStackTrace();
+                        showAPIError(e);
                     }
                     return null;
                 }
@@ -153,14 +146,15 @@ public class VideoBroadcaster {
                 }
             }.execute();
         }
+
+        heartbeater.stop();
     }
 
-    private void showAPIError(String code, String message) {
-
+    private void showAPIError(ApiException e) {
 
         // TODO: Display a message to the user
-        Log.e(TAG, "Code: " + code);
-        Log.e(TAG, "Message: " + message);
+        Log.e(TAG, "Code: " + e.getCode());
+        Log.e(TAG, "Message: " + e.getMessage());
 
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
 //        builder.setMessage(message);
