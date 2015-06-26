@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 
+
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -17,6 +24,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    // Trying to get rid of
+    // Error:duplicate files during packaging of APK ./NOMAD Live/app/build/outputs/apk/app-debug-unaligned.apk
+    // http://stackoverflow.com/questions/22467127/error-duplicate-files-during-packaging-of-apk
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 dependencies {
@@ -27,5 +42,7 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.3'
 //    compile 'io.kickflip:sdk:1.1.1'
     compile 'io.cine:cineio-broadcast-android-sdk:0.0.15'
+
+    compile 'com.github.NOMAD-Live:android-client:1.0.2'
 
 }
