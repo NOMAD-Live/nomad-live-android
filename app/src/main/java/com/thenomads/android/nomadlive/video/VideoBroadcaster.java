@@ -1,5 +1,6 @@
 package com.thenomads.android.nomadlive.video;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -28,18 +29,42 @@ public class VideoBroadcaster {
     private Button mBroadcastButton;
     private Context mContext;
 
-    private Heartbeater heartbeater;
-    private StreamsApi streamsApi;
-    private Stream currentStream;
-    private boolean streamingState = false;
+    private Heartbeater mHeartbeater;
+    private StreamsApi mStreamsAPI;
+    private Stream mCurrentStream;
+    private boolean mStreamingState = false;
+    private AsyncTask<Void, Void, ApiException> getNewStreamTask = null;
 
-    public VideoBroadcaster(Button b, Context c) {
-        this.mBroadcastButton = b;
-        this.mContext = c;
+    public VideoBroadcaster(Button button, Context context) {
+        this.mBroadcastButton = button;
+        this.mContext = context;
 
-        this.streamsApi = new StreamsApi();
+        this.mStreamsAPI = new StreamsApi();
 
         startBroadcastActivityOnClick();
+    }
+
+    public static void showAPIErrorIfAny(ApiException e, Context context) {
+
+        // Display nothing if there is no error.
+        if (e == null)
+            return;
+
+        String code = "" + e.getCode();
+        String message = e.getMessage();
+
+        // TODO: Display a message to the user
+        Log.e(TAG, "Code: " + code);
+        Log.e(TAG, "Message: " + message);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setMessage(message).setTitle(code);
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 
     public void setup() {
@@ -64,31 +89,44 @@ public class VideoBroadcaster {
             @Override
             public void onClick(View v) {
 
-                new AsyncTask<Void, Void, Stream>() {
-                    protected Stream doInBackground(Void... params) {
+                // Hide the broadcast button to signal that the click has been recorded.
+                // Also avoids multiple stream requests
+                // Don't forget to show() it:
+                // - When the activity is initiatted. DONE
+                // - if there is an error dialog.
+                hide();
+
+                new AsyncTask<Void, Void, ApiException>() {
+                    protected ApiException doInBackground(Void... params) {
                         try {
+
                             Log.v(TAG, "Asking for a new stream...");
-                            return streamsApi.streamsPost();
+                            mCurrentStream = mStreamsAPI.streamsPost();
+
+                            return null;
 
                         } catch (ApiException e) {
-                            showAPIError(e);
-                            e.printStackTrace();
+                            // Pass the error onto the UI thread so it can be displayed.
+                            return e;
                         }
-                        return null;
                     }
 
                     @Override
-                    public void onPostExecute(Stream result) {
+                    public void onPostExecute(ApiException result) {
 
                         super.onPostExecute(result);
 
-                        if (result != null) {
-                            currentStream = result;
-                            Log.v(TAG, "Got new stream: " + result);
-                            broadcast(currentStream);
-                        } else {
-                            Log.e(TAG, "Unable to get a new stream.");
+                        if (result == null) {
+                            Log.v(TAG, "Got new stream: " + mCurrentStream);
+                            broadcast(mCurrentStream);
+                            return;
                         }
+
+                        showAPIErrorIfAny(result, mContext);
+                        Log.e(TAG, "Unable to get a new stream.");
+
+                        // Show the broadcast button back
+                        show();
                     }
                 }.execute();
             }
@@ -98,11 +136,11 @@ public class VideoBroadcaster {
     }
 
     public void setStreamingState(boolean newStreamingState) {
-        this.streamingState = newStreamingState;
+        this.mStreamingState = newStreamingState;
     }
 
     public boolean isStreaming() {
-        return this.streamingState;
+        return this.mStreamingState;
     }
 
     private void broadcast(Stream stream) {
@@ -111,9 +149,10 @@ public class VideoBroadcaster {
 
             Log.i(TAG, "Starting broadcast on stream " + stream.getId());
             mCineIoClient.broadcast(stream.getId(), mBroadcastConfig, mContext);
+
             this.setStreamingState(true);
-            heartbeater = new Heartbeater(stream);
-            heartbeater.start();
+            mHeartbeater = new Heartbeater(stream, mContext);
+            mHeartbeater.start();
         }
     }
 
@@ -123,46 +162,42 @@ public class VideoBroadcaster {
             return;
         }
         // Makes sure there is an actual stream.
-        if (currentStream != null) {
-            new AsyncTask<Void, Void, Stream>() {
-                protected Stream doInBackground(Void... params) {
-                    try {
-                        String id = currentStream.getId();
-                        String password = currentStream.getPassword();
-                        Log.i(TAG, "DELETING " + id + "?p=" + password);
+        if (mCurrentStream != null) {
+            new AsyncTask<Void, Void, ApiException>() {
+                protected ApiException doInBackground(Void... params) {
 
-                        return streamsApi.streamStreamIdDelete(id, password, password);
+                    try {
+                        String id = mCurrentStream.getId();
+                        String password = mCurrentStream.getPassword();
+
+                        Log.i(TAG, "DELETING " + id + "?p=" + password);
+                        mStreamsAPI.streamStreamIdDelete(id, password, password);
+
+                        return null;
 
                     } catch (ApiException e) {
-                        showAPIError(e);
+
+                        // Pass the error onto the UI thread so it can be displayed.
+                        return e;
                     }
-                    return null;
                 }
 
                 @Override
-                public void onPostExecute(Stream result) {
-                    Log.i(TAG, "Stream deleted (" + result.getId() + ")");
-                    setStreamingState(false);
+                public void onPostExecute(ApiException result) {
+                    if (result == null) {
+                        Log.i(TAG, "Stream deleted (" + mCurrentStream.getId() + ")");
+                        setStreamingState(false);
+                    }
+
+                    showAPIErrorIfAny(result, mContext);
+
+                    // Show the broadcast button back
+                    show();
                 }
             }.execute();
         }
 
-        heartbeater.stop();
-    }
-
-    private void showAPIError(ApiException e) {
-
-        // TODO: Display a message to the user
-        Log.e(TAG, "Code: " + e.getCode());
-        Log.e(TAG, "Message: " + e.getMessage());
-
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
-//        builder.setMessage(message);
-//
-//        // 3. Get the AlertDialog from create()
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-
+        mHeartbeater.stop();
     }
 
     /**
