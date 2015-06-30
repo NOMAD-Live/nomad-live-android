@@ -68,14 +68,18 @@ public class LiveScreenFragment extends Fragment {
 
         // Go online if available
         checkServerAvailability();
+
+        // Release the current stream on return to the tv.
+        mVideoBroadcaster.destroyCurrentStream();
+        // If we are back to the activity then not streaming anymore
+        mVideoBroadcaster.setStreamingState(false);
     }
 
     public void onPause() {
+        super.onPause();
 
         // Makes sure we go back to the initial state when we go back to the Activity.
         CONNECTED_TO_INTERNET = false;
-
-        super.onPause();
     }
 
     private void handleBetaOptions() {
@@ -141,7 +145,7 @@ public class LiveScreenFragment extends Fragment {
     }
 
     private void checkServerAvailability() {
-        new ReachabilityTest(mVideoPath, 1953, mRootView.getContext(), new ReachabilityTest.Callback() {
+        new ReachabilityTest(mVideoPath, 1935, mRootView.getContext(), new ReachabilityTest.Callback() {
             @Override
             public void onReachabilityTestPassed() {
                 Log.i(TAG, "Internet available.");
