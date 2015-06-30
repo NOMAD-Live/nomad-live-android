@@ -37,7 +37,9 @@
         </activity>
         <activity
             android:name="io.cine.android.BroadcastActivity"
-            android:label="CineIOBroadcastActivity" />
+            android:label="CineIOBroadcastActivity"
+            android:largeHeap="true" />
+        <!-- http://stackoverflow.com/questions/11557495/increase-the-memory-allocated-to-application -->
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings" />

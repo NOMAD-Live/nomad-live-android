@@ -1,22 +1,22 @@
 package com.thenomads.android.nomadlive.ui;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Build;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.thenomads.android.nomadlive.R;
 
+import java.util.Arrays;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
+ * handset devices, settings are presented as a single list.
  * <p/>
  * See <a href="http://developer.android.com/design/patterns/settings.html">
  * Android Design: Settings</a> for design guidelines and the <a
@@ -24,13 +24,8 @@ import com.thenomads.android.nomadlive.R;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends PreferenceActivity {
-    /**
-     * Determines whether to always show the simplified settings UI, where
-     * settings are presented in a single list. When false, settings are shown
-     * as a master/detail two-pane view on tablets. When true, a single pane is
-     * shown on tablets.
-     */
-    private static final boolean ALWAYS_SIMPLE_PREFS = false;
+
+    private static final String TAG = "SettingsActivity";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -47,28 +42,6 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         }
     };
-
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
-
-    /**
-     * Determines whether the simplified settings UI should be shown. This is
-     * true if this is forced via {@link #ALWAYS_SIMPLE_PREFS}, or the device
-     * doesn't have newer APIs like {@link PreferenceFragment}, or the device
-     * doesn't have an extra-large screen. In these cases, a single-pane
-     * "simplified" settings UI should be shown.
-     */
-    private static boolean isSimplePreferences(Context context) {
-        return ALWAYS_SIMPLE_PREFS
-                || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
-                || !isXLargeTablet(context);
-    }
 
     /**
      * Binds a preference's summary to its value. More specifically, when the
@@ -95,72 +68,86 @@ public class SettingsActivity extends PreferenceActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        setupSimplePreferencesScreen();
+        populateSettings();
     }
 
     /**
-     * Shows the simplified settings UI if the device configuration if the
-     * device configuration dictates that a simplified, single-pane UI should be
-     * shown.
+     * Also called after modifying a setting programatically to update the UI.
      */
-    private void setupSimplePreferencesScreen() {
-        if (!isSimplePreferences(this)) {
-            return;
-        }
+    private void populateSettings() {
 
-        // In the simplified UI, fragments are not used at all and we instead
-        // use the older PreferenceActivity APIs.
-        // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_general);
-//
-//        // Add 'notifications' preferences, and a corresponding header.
-//        PreferenceCategory fakeHeader = new PreferenceCategory(this);
-//        fakeHeader.setTitle(R.string.pref_header_notifications);
-//        getPreferenceScreen().addPreference(fakeHeader);
-//        addPreferencesFromResource(R.xml.pref_notification);
-//
-//        // Add 'data and sync' preferences, and a corresponding header.
-//        fakeHeader = new PreferenceCategory(this);
-//        fakeHeader.setTitle(R.string.pref_header_data_sync);
-//        getPreferenceScreen().addPreference(fakeHeader);
-//        addPreferencesFromResource(R.xml.pref_data_sync);
-//
-//        // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
-//        // their values. When their values change, their summaries are updated
-//        // to reflect the new value, per the Android Design guidelines.
-//        bindPreferenceSummaryToValue(findPreference("example_text"));
-//        bindPreferenceSummaryToValue(findPreference("example_list"));
-//        bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-//        bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+
+        // Display secret key on same screen.
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_cine_secret)));
+
+        // Allow all settings to be reset.
+        bindResetToButton();
+
+        // Pulls the version from the package info.
+        Preference p = findPreference(getString(R.string.pref_key_version));
+        p.setSummary(getVersionName());
+
     }
 
     /**
-     * {@inheritDoc}
+     * Resets all settings to their default value, then refreshes the page.
      */
-    @Override
-    public boolean onIsMultiPane() {
-        return isXLargeTablet(this) && !isSimplePreferences(this);
+    private void bindResetToButton() {
+
+        Preference button = findPreference(getString(R.string.pref_key_reset));
+
+        button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                resetSettings();
+
+                return true;
+            }
+        });
     }
 
+    private String getVersionName() {
+        String versionName = "NOT_FOUND";
 
-    /**
-     * This fragment shows general preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+        PackageInfo packageInfo;
+        try {
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionName = packageInfo.versionName;
+            versionName += " (build " + packageInfo.versionCode + ")";
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
+
+        return versionName;
+    }
+
+    private void resetSettings() {
+
+        Log.d(TAG, "Resetting settings to defaults...");
+
+        // Resets settings loading from the XML file.
+        Context context = getBaseContext();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Values before doing anything.
+        Log.d(TAG, Arrays.toString(sp.getAll().entrySet().toArray()));
+
+        // Delete all settings and reload from defaults.
+        sp.edit().clear().commit();
+        PreferenceManager.setDefaultValues(context, R.xml.pref_general, true);
+
+        // Makes sure the new settings have been applied.
+        sp = PreferenceManager.getDefaultSharedPreferences(context);
+        Log.d(TAG, Arrays.toString(sp.getAll().entrySet().toArray()));
+
+        // Refreshes the screen.
+        // http://stackoverflow.com/questions/8003098/how-do-you-refresh-preferenceactivity-to-show-changes-in-the-settings
+        setPreferenceScreen(null);
+        populateSettings();
+
+        Log.d(TAG, "Settings reset done.");
     }
 
 }

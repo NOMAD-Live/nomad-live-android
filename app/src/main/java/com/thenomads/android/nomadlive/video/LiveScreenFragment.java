@@ -49,13 +49,16 @@ public class LiveScreenFragment extends Fragment {
         WebView twitterTickerWebView = (WebView) mRootView.findViewById(R.id.twitter_banner);
         mTwitterTicker = new TwitterTicker(twitterTickerWebView, this.getActivity());
 
-
+        // Load the video sources
         mVideoPath = getString(R.string.nomad_live_hls);
-        mLocalPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.dancefloor;
-//        mIntroPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.nomad720p;
+        mLocalPath = "android.resource://" + mRootView.getContext().getPackageName() + "/" + R.raw.amm;
+
 
         // Adds a spinner to give loading feedback to the user
         displayLoadingSpinnerIfNeeded();
+
+        // Avoids the 'Unable to read video' feeding a compatible video.
+        playBackupVideoOnFailedStream();
 
         return mRootView;
     }
@@ -71,6 +74,7 @@ public class LiveScreenFragment extends Fragment {
 
         // Release the current stream on return to the tv.
         mVideoBroadcaster.destroyCurrentStream();
+
         // If we are back to the activity then not streaming anymore
         mVideoBroadcaster.setStreamingState(false);
     }
@@ -151,8 +155,8 @@ public class LiveScreenFragment extends Fragment {
                 Log.i(TAG, "Internet available.");
 
                 if (!CONNECTED_TO_INTERNET) {
-                    mLiveVideoView.setVideoPath(mVideoPath);
-                    mLiveVideoView.start();
+                    playMainStream();
+
                     Log.i(TAG, "Switched Playback to: " + mVideoPath);
                 }
                 CONNECTED_TO_INTERNET = true;
@@ -163,12 +167,36 @@ public class LiveScreenFragment extends Fragment {
                 Log.e(TAG, "Internet NOT available.");
 
                 // Switches right away to local if no internet is available
-                mLiveVideoView.setVideoPath(mLocalPath);
-                mLiveVideoView.start();
+                playBackupVideo();
+
                 Log.i(TAG, "Switched Playback to: " + mLocalPath);
 
                 CONNECTED_TO_INTERNET = false;
             }
         }).execute();
+    }
+
+    private void playBackupVideo() {
+        mLiveVideoView.setVideoPath(mLocalPath);
+//        mLiveVideoView.start();
+
+    }
+
+    private void playMainStream() {
+        mLiveVideoView.setVideoPath(mVideoPath);
+//        mLiveVideoView.start();
+    }
+
+    private void playBackupVideoOnFailedStream() {
+
+        mLiveVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+
+                Log.d(TAG, "Error with the media player.");
+                playBackupVideo();
+                return true;
+            }
+        });
     }
 }
