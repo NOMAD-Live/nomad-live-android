@@ -4,7 +4,7 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="twitter_ticker"
+            android:key="@string/pref_key_twitter_ticker"
             android:summary="@string/pref_description_twitter_ticker"
             android:title="@string/pref_title_twitter_ticker" />
 
@@ -14,10 +14,31 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="broadcast"
+            android:key="@string/pref_key_broadcast"
             android:summary="@string/pref_description_broadcast"
             android:title="@string/pref_title_broadcast" />
 
+        <EditTextPreference
+            android:defaultValue="960dc609fab24e922c3605d1152f48e4"
+            android:key="@string/pref_key_cine_secret"
+            android:summary="@string/pref_description_cine_secret"
+            android:title="@string/pref_title_cine_secret" />
+
+
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_header_info">
+
+        <Preference
+            android:key="@string/pref_key_version"
+            android:title="@string/pref_title_version" />
+
+        <Preference
+            android:key="@string/pref_key_reset"
+            android:summary="@string/pref_description_reset"
+            android:title="@string/pref_title_reset" />
+
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

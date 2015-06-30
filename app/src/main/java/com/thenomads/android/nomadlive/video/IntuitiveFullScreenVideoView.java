@@ -26,6 +26,7 @@ public class IntuitiveFullScreenVideoView extends VideoView {
             // Play the video once the player is ready
             public void onPrepared(MediaPlayer mp) {
                 mp.setLooping(true);
+                mp.start();
             }
         });
     }

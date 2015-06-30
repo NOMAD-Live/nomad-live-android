@@ -152,7 +152,8 @@ public class LiveScreenFragment extends Fragment {
 
                 if (!CONNECTED_TO_INTERNET) {
                     mLiveVideoView.setVideoPath(mVideoPath);
-                    mLiveVideoView.start();
+//                    mLiveVideoView.start();
+
                     Log.i(TAG, "Switched Playback to: " + mVideoPath);
                 }
                 CONNECTED_TO_INTERNET = true;
@@ -164,7 +165,8 @@ public class LiveScreenFragment extends Fragment {
 
                 // Switches right away to local if no internet is available
                 mLiveVideoView.setVideoPath(mLocalPath);
-                mLiveVideoView.start();
+//                mLiveVideoView.start();
+
                 Log.i(TAG, "Switched Playback to: " + mLocalPath);
 
                 CONNECTED_TO_INTERNET = false;

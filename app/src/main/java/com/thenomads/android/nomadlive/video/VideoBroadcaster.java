@@ -2,12 +2,14 @@ package com.thenomads.android.nomadlive.video;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.thenomads.android.nomadlive.SECRETS;
+import com.thenomads.android.nomadlive.R;
 
 import io.cine.android.BroadcastConfig;
 import io.cine.android.CineIoClient;
@@ -33,14 +35,15 @@ public class VideoBroadcaster {
     private StreamsApi mStreamsAPI;
     private Stream mCurrentStream;
     private boolean mStreamingState = false;
-    private AsyncTask<Void, Void, ApiException> getNewStreamTask = null;
+    private SharedPreferences mSharedPreferences;
 
     public VideoBroadcaster(Button button, Context context) {
+
+        this.mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.mBroadcastButton = button;
         this.mContext = context;
 
         this.mStreamsAPI = new StreamsApi();
-
         startBroadcastActivityOnClick();
     }
 
@@ -69,7 +72,12 @@ public class VideoBroadcaster {
 
     public void setup() {
         CineIoConfig config = new CineIoConfig();
-        config.setSecretKey(SECRETS.CINE_SECRET_KEY);
+
+        String key_id = mContext.getString(R.string.pref_key_cine_secret);
+
+        String cineIOSecret = mSharedPreferences.getString(key_id, "CANT_GET_KEY_FROM_SHARED_PREFERENCES");
+        config.setSecretKey(cineIOSecret);
+
         // config.setMasterKey(SECRETS.MASTER_KEY);
         mCineIoClient = new CineIoClient(config);
 
