@@ -50,6 +50,13 @@ public class Heartbeater {
 
                             Log.v(TAG, "Beating for: " + mStream.getId());
                             oneBeat().execute(mStream);
+
+                            // REALLY BIG HACK TO CLEAN CINE.IO HEAP
+                            // TODO: GET RID OF IT ASAP
+                            Log.d(TAG, "HUGE HACK: FORCE GARBAGE COLLECTOR. GET RID OF IT ASAP!!!");
+
+                            System.gc();
+
                         } catch (Exception e) {
                             Log.e(TAG, "Could not execute one beat for " + mStream);
                             e.printStackTrace();
