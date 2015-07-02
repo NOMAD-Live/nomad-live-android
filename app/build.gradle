@@ -15,8 +15,8 @@ android {
         applicationId "com.thenomads.android.nomadlive"
         minSdkVersion 18
         targetSdkVersion 19
-        versionCode 70
-        versionName "1.0.3"
+        versionCode 72
+        versionName "1.1.1 The Holy Cow"
     }
     buildTypes {
         release {
