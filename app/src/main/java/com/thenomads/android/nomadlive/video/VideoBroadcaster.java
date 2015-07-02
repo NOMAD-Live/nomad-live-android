@@ -85,10 +85,18 @@ public class VideoBroadcaster {
         mBroadcastConfig.selectCamera("back");
         mBroadcastConfig.lockOrientation("landscape");
 
-//        TODO: Make sure the quality gets actually set to 480p.
-//        Trying to fix #24
-//        mBroadcastConfig.setHeight(480);
-//        mBroadcastConfig.setWidth(720);
+        // Sets the quality to 360p Widescreen
+//        mBroadcastConfig.setWidth(640);
+//        mBroadcastConfig.setHeight(360);
+
+        // Sets the quality toone of the lowest size supported by CameraUtils (Nexus 4)
+        mBroadcastConfig.setWidth(240);
+        mBroadcastConfig.setHeight(160);
+
+//        D/CameraUtils﹕ supported: 1280x720
+//        ﹕800x480        768x432        720x480        640x480
+//        576x432        384x288        480x320        352x288
+//        320x240        240x160        176x144
     }
 
     private void startBroadcastActivityOnClick() {
