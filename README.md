@@ -6,6 +6,14 @@
 
 Share the action, be the motion.
 
+## Screenshots
+
+![Main Stream](./screenshots/running-man.png)
+
+![Info Page](./screenshots/info-page.png)
+
+![Settings](./screenshots/settings.png)
+
 
 ## Setup
 
