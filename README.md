@@ -1,9 +1,11 @@
-[![Stories in Ready](https://badge.waffle.io/NOMAD-Live/nomad-live-android.png?label=ready&title=Ready)](https://waffle.io/NOMAD-Live/nomad-live-android)
 # `nomad-live-android`
+
+[![Stories in Ready](https://badge.waffle.io/NOMAD-Live/nomad-live-android.png?label=ready&title=Ready)](https://waffle.io/NOMAD-Live/nomad-live-android)
+
+[![Latest APK][4]][3] 
 
 Share the action, be the motion.
 
-Get the nightly builds [here](http://bit.ly/NOMAD-Live-latest).
 
 ## Setup
 
@@ -35,3 +37,7 @@ To contribute do not hesitate to send me pull requests !
 	* :non-potable_water: when plugging memory leaks
 	* :memo: when writing docs
 	* :bulb: Check out the Emoji Cheat Sheet for more ideas.
+
+
+  [3]: https://github.com/NOMAD-Live/nomad-live-android/releases/latest
+  [4]: http://mobilapk.com/wp-content/uploads/2015/03/apk.png
